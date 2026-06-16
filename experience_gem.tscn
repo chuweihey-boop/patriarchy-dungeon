@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://experience_gem.gd" id="1_gem_gd"]
+[ext_resource type="Texture2D" path="res://kenney_tiny-dungeon/Tiles/tile_0115.png" id="2_gem_png"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
+radius = 15.0
+
+[node name="ExperienceGem" type="Area2D"]
+script = ExtResource("1_gem_gd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(4, 4)
+texture = ExtResource("2_gem_png")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gem")

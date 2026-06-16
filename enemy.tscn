@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cbb312j4or3i2"]
+
+[ext_resource type="Script" uid="uid://cyqi3fpymqdhb" path="res://enemy.gd" id="1_4gyqm"]
+[ext_resource type="Texture2D" uid="uid://cj6pu8mmraqiv" path="res://kenney_tiny-dungeon/Tiles/tile_0108.png" id="2_qi2p4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iifgy"]
+radius = 35.0
+
+[node name="Enemy" type="CharacterBody2D" unique_id=1102844889]
+script = ExtResource("1_4gyqm")
+
+[node name="Tile0108" type="Sprite2D" parent="." unique_id=1213849223]
+scale = Vector2(5, 5)
+texture = ExtResource("2_qi2p4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=28821067]
+shape = SubResource("CircleShape2D_iifgy")
+

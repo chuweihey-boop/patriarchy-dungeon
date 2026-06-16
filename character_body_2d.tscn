@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://ccqebgkhtoc8k"]
+
+[ext_resource type="Script" uid="uid://d4ggylxbgjp54" path="res://character_body_2d.gd" id="1_ij6vw"]
+[ext_resource type="Texture2D" uid="uid://uq4suxbh4uht" path="res://kenney_tiny-dungeon/Tiles/tile_0099.png" id="2_ghijl"]
+[ext_resource type="PackedScene" path="res://weapon.tscn" id="3_weapon_tscn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_44cfe"]
+radius = 35.0
+
+[node name="Player" type="CharacterBody2D" unique_id=1094734210 groups=["player"]]
+script = ExtResource("1_ij6vw")
+
+[node name="Tile0099" type="Sprite2D" parent="." unique_id=2031518035]
+scale = Vector2(5, 5)
+texture = ExtResource("2_ghijl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1673379804]
+shape = SubResource("CircleShape2D_44cfe")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=987654321]
+zoom = Vector2(1.2, 1.2)
+position_smoothing_enabled = true
+
+[node name="Weapon" parent="." instance=ExtResource("3_weapon_tscn")]
+
+[node name="Hurtbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_44cfe")
+
+
+

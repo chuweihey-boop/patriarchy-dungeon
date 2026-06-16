@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bxjikp8aixwwo"]
+
+[ext_resource type="PackedScene" uid="uid://ccqebgkhtoc8k" path="res://character_body_2d.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://dlr02hcm33b4a" path="res://world.gd" id="1_fj7yv"]
+[ext_resource type="PackedScene" path="res://hud.tscn" id="3_hud_tscn"]
+
+[node name="World" type="Node2D" unique_id=1655614396]
+script = ExtResource("1_fj7yv")
+
+[node name="EnemySpawner" type="Timer" parent="." unique_id=736189279]
+wait_time = 2.0
+autostart = true
+
+[node name="CharacterBody2D" parent="." unique_id=1094734210 instance=ExtResource("1_f3sb7")]
+position = Vector2(54, -34)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud_tscn")]
+
+[connection signal="timeout" from="EnemySpawner" to="." method="_on_enemy_spawner_timeout"]
+
