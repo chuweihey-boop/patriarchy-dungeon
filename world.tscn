@@ -3,9 +3,17 @@
 [ext_resource type="PackedScene" uid="uid://ccqebgkhtoc8k" path="res://character_body_2d.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://dlr02hcm33b4a" path="res://world.gd" id="1_fj7yv"]
 [ext_resource type="PackedScene" path="res://hud.tscn" id="3_hud_tscn"]
+[ext_resource type="Texture2D" path="res://kenney_tiny-dungeon/Tiles/tile_0014.png" id="4_tile_0014"]
 
 [node name="World" type="Node2D" unique_id=1655614396]
 script = ExtResource("1_fj7yv")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture_repeat = 2
+scale = Vector2(8, 8)
+texture = ExtResource("4_tile_0014")
+region_enabled = true
+region_rect = Rect2(-10000, -10000, 20000, 20000)
 
 [node name="EnemySpawner" type="Timer" parent="." unique_id=736189279]
 wait_time = 2.0
