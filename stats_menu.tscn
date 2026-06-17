@@ -1,0 +1,177 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3qebgkhtoc8k"]
+
+[ext_resource type="Script" path="res://stats_menu.gd" id="1_stats"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.08, 0.08, 0.08, 0.9)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.65, 1.0, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.2, 0.25, 0.3, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.3, 0.4, 0.5, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="StatsMenu" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_stats")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -240.0
+offset_right = 220.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 24.0
+offset_right = 150.0
+offset_bottom = 58.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Character Stats"
+horizontal_alignment = 1
+
+[node name="StatsContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -155.0
+offset_right = 170.0
+offset_bottom = 155.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="HBoxHP" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxHP"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "HP:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxHP"]
+layout_mode = 2
+text = "100 / 100"
+
+[node name="HBoxDamage" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxDamage"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attack Damage:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxDamage"]
+layout_mode = 2
+text = "100%"
+
+[node name="HBoxSpeed" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxSpeed"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Walking Speed:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxSpeed"]
+layout_mode = 2
+text = "100%"
+
+[node name="HBoxFreq" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxFreq"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attack Frequency:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxFreq"]
+layout_mode = 2
+text = "100%"
+
+[node name="HBoxRange" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxRange"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Attack Range:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxRange"]
+layout_mode = 2
+text = "100%"
+
+[node name="HBoxRegen" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxRegen"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "HP Regeneration:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxRegen"]
+layout_mode = 2
+text = "0.0 HP/s"
+
+[node name="HBoxShield" type="HBoxContainer" parent="Panel/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/StatsContainer/HBoxShield"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Shield:"
+
+[node name="Value" type="Label" parent="Panel/StatsContainer/HBoxShield"]
+layout_mode = 2
+text = "0"
+
+[node name="CloseButton" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -60.0
+offset_right = 70.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "Close"

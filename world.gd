@@ -55,3 +55,17 @@ func _on_player_level_up(new_level: int) -> void:
 	# Instantiate and display the upgrade menu
 	var menu = UPGRADE_MENU_SCENE.instantiate()
 	add_child(menu)
+
+const STATS_MENU_SCENE = preload("res://stats_menu.tscn")
+var stats_menu_instance = null
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.is_echo():
+		if event.keycode == KEY_I:
+			if is_instance_valid(stats_menu_instance):
+				stats_menu_instance.close_menu()
+			elif not get_tree().paused:
+				get_viewport().set_input_as_handled()
+				stats_menu_instance = STATS_MENU_SCENE.instantiate()
+				add_child(stats_menu_instance)
+

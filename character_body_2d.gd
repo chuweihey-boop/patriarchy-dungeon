@@ -15,6 +15,13 @@ var level: int = 1
 var experience: int = 0
 var experience_required: int = 10
 
+# Character Stats
+var default_speed: float = 300.0
+var attack_frequency_modifier: float = 1.0
+var attack_range_modifier: float = 1.0
+var regen_speed: float = 0.0
+var shield: int = 0
+
 var damage_timer: float = 0.0
 
 @onready var hurtbox: Area2D = $Hurtbox
@@ -28,6 +35,11 @@ func _ready() -> void:
 	experience_changed.emit(experience, experience_required)
 
 func _physics_process(delta: float) -> void:
+	# HP Regeneration over time
+	if regen_speed > 0.0 and health < max_health:
+		health = min(max_health, health + regen_speed * delta)
+		health_changed.emit(health, max_health)
+
 	# Move the character with momentum (acceleration/deceleration)
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var target_velocity = direction * speed
@@ -60,7 +72,9 @@ func _physics_process(delta: float) -> void:
 				break
 
 func take_damage(amount: float) -> void:
-	health = max(0.0, health - amount)
+	# Shield reduces damage, minimum 1.0 damage taken
+	var final_damage = max(1.0, amount - shield)
+	health = max(0.0, health - final_damage)
 	health_changed.emit(health, max_health)
 	if health <= 0:
 		_die()
