@@ -19,6 +19,10 @@ func _ready() -> void:
 		hud.update_health(player.health, player.max_health)
 		hud.update_xp(player.experience, player.experience_required)
 		hud.update_level(player.level)
+		
+	# Instantiate and display starting weapon selection menu
+	var weapon_selection = preload("res://weapon_selection_menu.tscn").instantiate()
+	add_child(weapon_selection)
 
 func _process(delta: float) -> void:
 	if not get_tree().paused:

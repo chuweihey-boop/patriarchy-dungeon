@@ -16,7 +16,10 @@
 [ext_resource type="PackedScene" path="res://weapon.tscn" id="4_weapon_tscn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_44cfe"]
-radius = 52.0
+radius = 60.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_physics"]
+radius = 32.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_player"]
 animations = [{
@@ -78,7 +81,7 @@ animation = &"idle"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1673379804]
-shape = SubResource("CircleShape2D_44cfe")
+shape = SubResource("CircleShape2D_physics")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=987654321]
 zoom = Vector2(1.0, 1.0)
