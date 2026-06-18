@@ -66,9 +66,9 @@ func _shoot(target: CharacterBody2D) -> void:
 		# Offset the slash spawn position toward the target so it overlaps them
 		bullet.global_position = global_position + bullet.direction * 110.0
 		bullet.get_node("Sprite2D").texture = preload("res://kenney_tiny-dungeon/Tiles/tile_0105.png")
-		bullet.get_node("Sprite2D").scale = Vector2(5, 5) # Large melee dagger
+		bullet.get_node("Sprite2D").scale = Vector2(3.5, 3.5) # Medium melee dagger
 		# Scale up the collision shape to match the sweep area
-		bullet.get_node("CollisionShape2D").scale = Vector2(4.5, 4.5)
+		bullet.get_node("CollisionShape2D").scale = Vector2(3.8, 3.8)
 		bullet.rotation = bullet.direction.angle() - 0.6 # Starting swing offset
 	else:
 		bullet.speed = 500.0 # Magic spark travels forward
@@ -76,7 +76,7 @@ func _shoot(target: CharacterBody2D) -> void:
 		bullet.lifetime = 1.2 # Travels for 1.2s
 		bullet.is_melee = false
 		bullet.get_node("Sprite2D").texture = preload("res://kenney_tiny-dungeon/Tiles/tile_0116.png")
-		bullet.get_node("Sprite2D").scale = Vector2(4, 4) # Magic potion drop/spark
+		bullet.get_node("Sprite2D").scale = Vector2(2.5, 2.5) # Medium magic potion drop/spark
 		bullet.rotation = bullet.direction.angle()
 
 	# Add the bullet to the world/root scene so it doesn't move with the player

@@ -6,12 +6,22 @@ extends Area2D
 var player: CharacterBody2D = null
 var is_being_collected: bool = false
 
+@onready var sprite: AnimatedSprite2D = %Sprite
+
 func _ready() -> void:
+	add_to_group("experience_gems")
+	
 	# Find the player in group "player"
 	player = get_tree().get_first_node_in_group("player")
 	
 	# Connect overlap signal
 	body_entered.connect(_on_body_entered)
+	
+	# Update animation based on value
+	if xp_value >= 5:
+		sprite.play("big")
+	else:
+		sprite.play("small")
 
 func _physics_process(delta: float) -> void:
 	if not player:
