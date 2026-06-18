@@ -53,7 +53,9 @@ func _on_upgrade_chosen(upgrade_id: String) -> void:
 	if player:
 		match upgrade_id:
 			"speed":
-				player.speed *= 1.15
+				player.default_speed *= 1.15
+				if player.has_method("_update_speed"):
+					player._update_speed()
 			"health":
 				player.max_health += 20.0
 				player.health = player.max_health

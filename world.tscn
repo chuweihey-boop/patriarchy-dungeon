@@ -3,12 +3,13 @@
 [ext_resource type="PackedScene" uid="uid://ccqebgkhtoc8k" path="res://character_body_2d.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://dlr02hcm33b4a" path="res://world.gd" id="1_fj7yv"]
 [ext_resource type="PackedScene" path="res://hud.tscn" id="3_hud_tscn"]
-[ext_resource type="Texture2D" path="res://kenney_tiny-dungeon/Tiles/tile_0014.png" id="4_tile_0014"]
+[ext_resource type="Texture2D" uid="uid://cpggto6xc6qjx" path="res://kenney_tiny-dungeon/Tiles/tile_0014.png" id="4_tile_0014"]
 
 [node name="World" type="Node2D" unique_id=1655614396]
+position = Vector2(0, -1)
 script = ExtResource("1_fj7yv")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1359136176]
 texture_repeat = 2
 scale = Vector2(8, 8)
 texture = ExtResource("4_tile_0014")
@@ -22,7 +23,6 @@ autostart = true
 [node name="CharacterBody2D" parent="." unique_id=1094734210 instance=ExtResource("1_f3sb7")]
 position = Vector2(54, -34)
 
-[node name="HUD" parent="." instance=ExtResource("3_hud_tscn")]
+[node name="HUD" parent="." unique_id=1168449327 instance=ExtResource("3_hud_tscn")]
 
 [connection signal="timeout" from="EnemySpawner" to="." method="_on_enemy_spawner_timeout"]
-

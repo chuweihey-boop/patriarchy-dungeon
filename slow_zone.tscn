@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://slow0one123"]
+
+[ext_resource type="Script" path="res://slow_zone.gd" id="1_slow"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_slow"]
+radius = 75.0
+
+[node name="SlowZone" type="Area2D"]
+script = ExtResource("1_slow")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_slow")
