@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://slow0one123"]
+[gd_scene load_steps=4 format=3 uid="uid://slow0one123"]
 
 [ext_resource type="Script" path="res://slow_zone.gd" id="1_slow"]
+[ext_resource type="Texture2D" path="res://art/yellow_green_water.png" id="2_water"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_slow"]
 radius = 75.0
@@ -10,3 +11,7 @@ script = ExtResource("1_slow")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_slow")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.171875, 1.171875)
+texture = ExtResource("2_water")
