@@ -6,11 +6,7 @@ func _ready() -> void:
 	# Connect overlap signal
 	body_entered.connect(_on_body_entered)
 
-func _draw() -> void:
-	# Draw a centered brown cube (size 30x30, 1/5 of the 150px slow zone)
-	draw_rect(Rect2(-15, -15, 30, 30), Color(0.45, 0.28, 0.15))
-	# Draw a darker border outline
-	draw_rect(Rect2(-15, -15, 30, 30), Color(0.3, 0.18, 0.08), false, 2.0)
+
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):

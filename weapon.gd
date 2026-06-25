@@ -1,9 +1,9 @@
 extends Node2D
 
-enum WeaponType { KNIFE, WAND }
+enum WeaponType { EGGBUSKET, NEGI, FISHKNIFE, WOODENSWORD }
 
 @export var bullet_scene: PackedScene = preload("res://bullet.tscn")
-@export var weapon_type: WeaponType = WeaponType.WAND
+@export var weapon_type: WeaponType = WeaponType.EGGBUSKET
 @export var damage_multiplier: float = 1.0
 
 var fire_rate: float = 1.0 # Shots per second
@@ -18,12 +18,19 @@ func _ready() -> void:
 	timer.start()
 
 func initialize_weapon_stats() -> void:
-	if weapon_type == WeaponType.KNIFE:
-		fire_rate = 1.8
-		shoot_range = 220.0
-	else:
-		fire_rate = 1.0
-		shoot_range = 600.0
+	match weapon_type:
+		WeaponType.EGGBUSKET:
+			fire_rate = 1.5
+			shoot_range = 550.0
+		WeaponType.NEGI:
+			fire_rate = 2.0
+			shoot_range = 220.0
+		WeaponType.FISHKNIFE:
+			fire_rate = 0.8
+			shoot_range = 220.0
+		WeaponType.WOODENSWORD:
+			fire_rate = 3.5
+			shoot_range = 220.0
 	update_timer()
 
 func update_timer() -> void:
@@ -58,26 +65,56 @@ func _shoot(target: CharacterBody2D) -> void:
 	bullet.global_position = global_position
 	bullet.direction = global_position.direction_to(target.global_position)
 	
-	if weapon_type == WeaponType.KNIFE:
-		bullet.speed = 0.0 # Melee doesn't travel forward
-		bullet.damage = 18.0 * damage_multiplier
-		bullet.lifetime = 0.15 # Fast slash swing duration
-		bullet.is_melee = true
-		# Offset the slash spawn position toward the target so it overlaps them
-		bullet.global_position = global_position + bullet.direction * 110.0
-		bullet.get_node("Sprite2D").texture = preload("res://kenney_tiny-dungeon/Tiles/tile_0105.png")
-		bullet.get_node("Sprite2D").scale = Vector2(3.5, 3.5) # Medium melee dagger
-		# Scale up the collision shape to match the sweep area
-		bullet.get_node("CollisionShape2D").scale = Vector2(3.8, 3.8)
-		bullet.rotation = bullet.direction.angle() - 0.6 # Starting swing offset
-	else:
-		bullet.speed = 500.0 # Magic spark travels forward
-		bullet.damage = 8.0 * damage_multiplier
-		bullet.lifetime = 1.2 # Travels for 1.2s
-		bullet.is_melee = false
-		bullet.get_node("Sprite2D").texture = preload("res://kenney_tiny-dungeon/Tiles/tile_0116.png")
-		bullet.get_node("Sprite2D").scale = Vector2(2.5, 2.5) # Medium magic potion drop/spark
-		bullet.rotation = bullet.direction.angle()
+	match weapon_type:
+		WeaponType.EGGBUSKET:
+			bullet.speed = 600.0
+			bullet.damage = 10.0 * damage_multiplier
+			bullet.lifetime = 1.2
+			bullet.is_melee = false
+			
+			var atlas_tex = AtlasTexture.new()
+			atlas_tex.atlas = preload("res://art/weapons/singleeggs.png")
+			if randf() < 0.5:
+				atlas_tex.region = Rect2(0, 0, 16, 32)
+			else:
+				atlas_tex.region = Rect2(16, 0, 16, 32)
+				
+			bullet.get_node("Sprite2D").texture = atlas_tex
+			bullet.get_node("Sprite2D").scale = Vector2(2.5, 2.5)
+			bullet.rotation = bullet.direction.angle()
+			
+		WeaponType.NEGI:
+			bullet.speed = 0.0
+			bullet.damage = 14.0 * damage_multiplier
+			bullet.lifetime = 0.2
+			bullet.is_melee = true
+			bullet.global_position = global_position + bullet.direction * 80.0
+			bullet.get_node("Sprite2D").texture = preload("res://art/weapons/negi.png")
+			bullet.get_node("Sprite2D").scale = Vector2(2.5, 2.5)
+			bullet.get_node("CollisionShape2D").scale = Vector2(2.8, 2.8)
+			bullet.rotation = bullet.direction.angle() - 0.6
+			
+		WeaponType.FISHKNIFE:
+			bullet.speed = 0.0
+			bullet.damage = 32.0 * damage_multiplier
+			bullet.lifetime = 0.3
+			bullet.is_melee = true
+			bullet.global_position = global_position + bullet.direction * 80.0
+			bullet.get_node("Sprite2D").texture = preload("res://art/weapons/fishknife.png")
+			bullet.get_node("Sprite2D").scale = Vector2(3.0, 3.0)
+			bullet.get_node("CollisionShape2D").scale = Vector2(3.3, 3.3)
+			bullet.rotation = bullet.direction.angle() - 0.6
+			
+		WeaponType.WOODENSWORD:
+			bullet.speed = 0.0
+			bullet.damage = 8.0 * damage_multiplier
+			bullet.lifetime = 0.12
+			bullet.is_melee = true
+			bullet.global_position = global_position + bullet.direction * 80.0
+			bullet.get_node("Sprite2D").texture = preload("res://art/weapons/woodensword.png")
+			bullet.get_node("Sprite2D").scale = Vector2(2.2, 2.2)
+			bullet.get_node("CollisionShape2D").scale = Vector2(2.5, 2.5)
+			bullet.rotation = bullet.direction.angle() - 0.6
 
 	# Add the bullet to the world/root scene so it doesn't move with the player
 	get_tree().current_scene.add_child(bullet)

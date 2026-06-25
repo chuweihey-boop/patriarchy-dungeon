@@ -1,8 +1,10 @@
-[gd_scene format=3 uid="uid://d3qebgkhtoc8k"]
+[gd_scene load_steps=7 format=3 uid="uid://d3qebgkhtoc8k"]
 
 [ext_resource type="Script" path="res://weapon_selection_menu.gd" id="1_select"]
-[ext_resource type="Texture2D" path="res://kenney_tiny-dungeon/Tiles/tile_0105.png" id="2_knife_icon"]
-[ext_resource type="Texture2D" path="res://kenney_tiny-dungeon/Tiles/tile_0130.png" id="3_wand_icon"]
+[ext_resource type="Texture2D" path="res://art/weapons/eggbusket.png" id="2_eggbusket"]
+[ext_resource type="Texture2D" path="res://art/weapons/negi.png" id="3_negi"]
+[ext_resource type="Texture2D" path="res://art/weapons/fishknife.png" id="4_fishknife"]
+[ext_resource type="Texture2D" path="res://art/weapons/woodensword.png" id="5_woodensword"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.08, 0.08, 0.08, 0.95)
@@ -26,9 +28,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
+offset_left = -330.0
 offset_top = -200.0
-offset_right = 320.0
+offset_right = 330.0
 offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -55,19 +57,19 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
+offset_left = -310.0
 offset_top = -90.0
-offset_right = 280.0
-offset_bottom = 110.0
+offset_right = 310.0
+offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 15
 
-[node name="KnifeButton" type="Button" parent="Panel/HBoxContainer"]
+[node name="EggbusketButton" type="Button" parent="Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/KnifeButton"]
+[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/EggbusketButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -76,33 +78,68 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/KnifeButton/VBox"]
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/EggbusketButton/VBox"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_horizontal = 4
-texture = ExtResource("2_knife_icon")
+texture = ExtResource("2_eggbusket")
 stretch_mode = 5
 
-[node name="Name" type="Label" parent="Panel/HBoxContainer/KnifeButton/VBox"]
+[node name="Name" type="Label" parent="Panel/HBoxContainer/EggbusketButton/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Dagger Knife"
+theme_override_font_sizes/font_size = 14
+text = "Egg Basket"
 horizontal_alignment = 1
 
-[node name="Description" type="Label" parent="Panel/HBoxContainer/KnifeButton/VBox"]
+[node name="Description" type="Label" parent="Panel/HBoxContainer/EggbusketButton/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-theme_override_font_sizes/font_size = 11
-text = "Melee Pierce Attack
-High Damage
+theme_override_font_sizes/font_size = 10
+text = "Remote Egg Attack
+Random Eggs
+Long Range"
+horizontal_alignment = 1
+
+[node name="NegiButton" type="Button" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/NegiButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/NegiButton/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_negi")
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Panel/HBoxContainer/NegiButton/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Negi Leek"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="Panel/HBoxContainer/NegiButton/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "Melee Sweep
+Moderate Stats
 Close Range"
 horizontal_alignment = 1
 
-[node name="WandButton" type="Button" parent="Panel/HBoxContainer"]
+[node name="FishknifeButton" type="Button" parent="Panel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/WandButton"]
+[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/FishknifeButton"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,24 +148,59 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/WandButton/VBox"]
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/FishknifeButton/VBox"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_horizontal = 4
-texture = ExtResource("3_wand_icon")
+texture = ExtResource("4_fishknife")
 stretch_mode = 5
 
-[node name="Name" type="Label" parent="Panel/HBoxContainer/WandButton/VBox"]
+[node name="Name" type="Label" parent="Panel/HBoxContainer/FishknifeButton/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Magic Wand"
+theme_override_font_sizes/font_size = 14
+text = "Fish Knife"
 horizontal_alignment = 1
 
-[node name="Description" type="Label" parent="Panel/HBoxContainer/WandButton/VBox"]
+[node name="Description" type="Label" parent="Panel/HBoxContainer/FishknifeButton/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-theme_override_font_sizes/font_size = 11
-text = "Ranged Spark Attack
-Moderate Damage
-Long Range"
+theme_override_font_sizes/font_size = 10
+text = "Heavy Melee
+Low Speed
+Big Damage"
+horizontal_alignment = 1
+
+[node name="WoodenswordButton" type="Button" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="Panel/HBoxContainer/WoodenswordButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Panel/HBoxContainer/WoodenswordButton/VBox"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("5_woodensword")
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Panel/HBoxContainer/WoodenswordButton/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Wooden Sword"
+horizontal_alignment = 1
+
+[node name="Description" type="Label" parent="Panel/HBoxContainer/WoodenswordButton/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "Swift Melee
+High Speed
+Low Damage"
 horizontal_alignment = 1

@@ -1,12 +1,16 @@
-[gd_scene format=3 uid="uid://browncube123"]
+[gd_scene load_steps=4 format=3 uid="uid://browncube123"]
 
 [ext_resource type="Script" path="res://brown_cube.gd" id="1_cube"]
+[ext_resource type="Texture2D" path="res://art/shit48.png" id="2_shit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cube"]
-size = Vector2(30, 30)
+size = Vector2(48, 48)
 
 [node name="BrownCube" type="Area2D"]
 script = ExtResource("1_cube")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_cube")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_shit")

@@ -1,21 +1,19 @@
 extends CanvasLayer
 
-@onready var knife_button: Button = $Panel/HBoxContainer/KnifeButton
-@onready var wand_button: Button = $Panel/HBoxContainer/WandButton
+@onready var eggbusket_button: Button = $Panel/HBoxContainer/EggbusketButton
+@onready var negi_button: Button = $Panel/HBoxContainer/NegiButton
+@onready var fishknife_button: Button = $Panel/HBoxContainer/FishknifeButton
+@onready var woodensword_button: Button = $Panel/HBoxContainer/WoodenswordButton
 
 func _ready() -> void:
 	# Pause the game tree immediately during selection
 	get_tree().paused = true
 	
 	# Connect buttons
-	knife_button.pressed.connect(_on_knife_selected)
-	wand_button.pressed.connect(_on_wand_selected)
-
-func _on_knife_selected() -> void:
-	_select_weapon(0) # 0 corresponds to WeaponType.KNIFE
-
-func _on_wand_selected() -> void:
-	_select_weapon(1) # 1 corresponds to WeaponType.WAND
+	eggbusket_button.pressed.connect(func(): _select_weapon(0))
+	negi_button.pressed.connect(func(): _select_weapon(1))
+	fishknife_button.pressed.connect(func(): _select_weapon(2))
+	woodensword_button.pressed.connect(func(): _select_weapon(3))
 
 func _select_weapon(type_id: int) -> void:
 	var player = get_tree().get_first_node_in_group("player")
