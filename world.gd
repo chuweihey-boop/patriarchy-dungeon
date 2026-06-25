@@ -16,11 +16,13 @@ func _ready() -> void:
 		player.health_changed.connect(hud.update_health)
 		player.experience_changed.connect(hud.update_xp)
 		player.level_up.connect(_on_player_level_up)
+		player.coins_changed.connect(hud.update_coins)
 		
 		# Set initial HUD state
 		hud.update_health(player.health, player.max_health)
 		hud.update_xp(player.experience, player.experience_required)
 		hud.update_level(player.level)
+		hud.update_coins(player.coins)
 		
 	# Instantiate and display starting weapon selection menu
 	var weapon_selection = preload("res://weapon_selection_menu.tscn").instantiate()

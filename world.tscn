@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cpggto6xc6qjx" path="res://kenney_tiny-dungeon/Tiles/tile_0014.png" id="4_tile_0014"]
 
 [node name="World" type="Node2D" unique_id=1655614396]
-position = Vector2(1, -1)
+position = Vector2(1, 0)
 script = ExtResource("1_fj7yv")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1359136176]

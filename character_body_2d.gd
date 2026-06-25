@@ -4,6 +4,7 @@ extends CharacterBody2D
 signal health_changed(current_health: float, max_health: float)
 signal experience_changed(current_xp: int, xp_required: int)
 signal level_up(new_level: int)
+signal coins_changed(current_coins: int)
 
 @export var speed: float = 300.0
 @export var acceleration: float = 1200.0 # Rate of speed change (momentum)
@@ -14,6 +15,7 @@ var health: float = 100.0
 var level: int = 1
 var experience: int = 0
 var experience_required: int = 10
+var coins: int = 0
 
 # Character Stats
 var default_speed: float = 300.0
@@ -98,6 +100,8 @@ func take_damage(amount: float) -> void:
 		_die()
 
 func gain_xp(amount: int) -> void:
+	coins += amount
+	coins_changed.emit(coins)
 	experience += amount
 	if experience >= experience_required:
 		# Level up!

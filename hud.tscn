@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://hud.gd" id="1_hud_gd"]
 [ext_resource type="FontFile" path="res://fonts/Xolonium-Regular.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://art/UI/smallcoin1.png" id="3_coin_icon"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_timer"]
 font = ExtResource("2_font")
@@ -10,6 +11,12 @@ outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_level"]
+font = ExtResource("2_font")
+font_size = 24
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_coin"]
 font = ExtResource("2_font")
 font_size = 24
 outline_size = 4
@@ -139,3 +146,23 @@ grow_horizontal = 0
 text = "LEVEL 1"
 label_settings = SubResource("LabelSettings_level")
 horizontal_alignment = 2
+
+[node name="CoinContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+offset_left = 20.0
+offset_top = 35.0
+offset_right = 170.0
+offset_bottom = 75.0
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="Control/CoinContainer"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("3_coin_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="Control/CoinContainer"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_coin")
