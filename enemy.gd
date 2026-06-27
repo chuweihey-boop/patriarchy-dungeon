@@ -95,9 +95,11 @@ func _spawn_damage_number(amount: float) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 func _die() -> void:
-	var gem = GEM_SCENE.instantiate()
-	gem.global_position = global_position
-	get_tree().current_scene.call_deferred("add_child", gem)
+	var drop_count = randi_range(2, 3)
+	for i in range(drop_count):
+		var gem = GEM_SCENE.instantiate()
+		gem.global_position = global_position + Vector2(randf_range(-25, 25), randf_range(-25, 25))
+		get_tree().current_scene.call_deferred("add_child", gem)
 	
 	if randf() < 0.05:
 		var heart = Area2D.new()

@@ -83,13 +83,13 @@ func _on_enemy_spawner_timeout() -> void:
 		return
 		
 	# Determine spawn count and speed (2x during last 1 minute wave)
-	var spawn_count = 1 + current_round # R1: 2, R2: 3, R3: 4, R4: 5, R5: 6
+	var spawn_count = 3 + current_round * 2
 	var is_wave = round_time_remaining <= 60.0
 	if is_wave:
 		spawn_count *= 2
-		$EnemySpawner.wait_time = max(0.15, (1.0 - (current_round - 1) * 0.15) * 0.5)
+		$EnemySpawner.wait_time = max(0.12, (0.8 - (current_round - 1) * 0.12) * 0.5)
 	else:
-		$EnemySpawner.wait_time = max(0.25, 1.0 - (current_round - 1) * 0.15)
+		$EnemySpawner.wait_time = max(0.20, 0.8 - (current_round - 1) * 0.12)
 		
 	for i in range(spawn_count):
 		var random_angle = randf_range(0.0, 2 * PI)
