@@ -8,6 +8,7 @@ var player: CharacterBody2D = null
 var is_being_collected: bool = false
 
 func _ready() -> void:
+	add_to_group("heart_pickups")
 	var sprite = Sprite2D.new()
 	sprite.texture = preload("res://art/glossy_heart.png")
 	sprite.scale = Vector2(2.0, 2.0)

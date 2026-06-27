@@ -113,6 +113,14 @@ var test_items = [
 		"title": "👹 Oni Mask",
 		"desc": "+25% Near Field Damage, -0.8 HP Regen/sec",
 		"stats": {"near_field_damage_pct": 25.0, "regen_speed": -0.8}
+	},
+	{
+		"id": "vacuum_cleaner",
+		"title": "🧲 Vacuum Magnet",
+		"desc": "Absorb all leftover coins & hearts when round ends",
+		"price": 80,
+		"action_type": "special",
+		"special_action": "absorb_round_end"
 	}
 ]
 
@@ -143,6 +151,9 @@ func _generate_shop_items() -> void:
 	var current_weapons = player.get_weapons() if is_instance_valid(player) and player.has_method("get_weapons") else []
 	
 	var pool = test_items.duplicate()
+	if is_instance_valid(player) and "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
+		pool = pool.filter(func(item): return item.get("id") != "vacuum_cleaner")
+		
 	if current_weapons.size() < 4:
 		var owned_types = []
 		for w in current_weapons:
@@ -335,6 +346,8 @@ func _rebuild_ui() -> void:
 		_add_stat_row(stats_list, "🌿 HP Regen", str(snapped(player.regen_speed, 0.1)) + " / sec")
 		_add_stat_row(stats_list, "🛡️ Shield", str(player.shield))
 		_add_stat_row(stats_list, "⚡ Move Speed", str(int(player.default_speed)))
+		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
+			_add_stat_row(stats_list, "🧲 Vacuum Magnet", "ACTIVE")
 		
 		var near_pct = int(player.near_field_damage_modifier * 100.0)
 		var range_pct = int(player.ranged_damage_modifier * 100.0)
@@ -444,6 +457,9 @@ func _buy_item(item: Dictionary, price: int) -> void:
 			w.damage_multiplier *= 1.08
 			w.fire_rate *= 1.04
 			w.update_timer()
+	elif action == "special":
+		if item.get("special_action") == "absorb_round_end":
+			player.absorb_pickups_on_round_end = true
 	else:
 		var stats = item.get("stats", {})
 		for stat_name in stats:

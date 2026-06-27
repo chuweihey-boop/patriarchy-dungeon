@@ -40,6 +40,7 @@ func _process(delta: float) -> void:
 	if not get_tree().paused and not game_won:
 		round_time_remaining -= delta
 		if round_time_remaining <= 0.0:
+			_absorb_all_pickups()
 			current_round += 1
 			if current_round > 5:
 				game_won = true
@@ -66,6 +67,19 @@ func _process(delta: float) -> void:
 		if merge_timer >= MERGE_INTERVAL:
 			merge_timer = 0.0
 			_check_and_merge_coins()
+
+func _absorb_all_pickups() -> void:
+	if not is_instance_valid(player) or not "absorb_pickups_on_round_end" in player or not player.absorb_pickups_on_round_end:
+		return
+	for gem in get_tree().get_nodes_in_group("experience_gems"):
+		if is_instance_valid(gem) and not gem.is_queued_for_deletion():
+			player.gain_xp(gem.xp_value)
+			gem.queue_free()
+	for heart in get_tree().get_nodes_in_group("heart_pickups"):
+		if is_instance_valid(heart) and not heart.is_queued_for_deletion():
+			if player.has_method("heal"):
+				player.heal(heart.heal_amount)
+			heart.queue_free()
 
 func _clear_world() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
