@@ -87,6 +87,13 @@ func _die() -> void:
 	var gem = GEM_SCENE.instantiate()
 	gem.global_position = global_position
 	get_tree().current_scene.call_deferred("add_child", gem)
+	
+	if randf() < 0.05:
+		var heart = Area2D.new()
+		heart.set_script(preload("res://heart_pickup.gd"))
+		heart.global_position = global_position + Vector2(randf_range(-20, 20), randf_range(-20, 20))
+		get_tree().current_scene.call_deferred("add_child", heart)
+		
 	queue_free()
 
 func _spawn_yellow_circle() -> void:
