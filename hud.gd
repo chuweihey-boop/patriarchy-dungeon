@@ -8,6 +8,10 @@ extends CanvasLayer
 @onready var wave_warning_label: Label = $Control/WaveWarningLabel
 
 func _ready() -> void:
+	# Add mobile virtual joystick
+	var joystick = preload("res://virtual_joystick.gd").new()
+	add_child(joystick)
+	
 	# Initialize display
 	level_label.text = "LEVEL 1"
 	timer_label.text = "ROUND 1/5   03:00"
