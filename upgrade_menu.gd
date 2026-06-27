@@ -75,6 +75,7 @@ var test_items = [
 ]
 
 var offered_items: Array = []
+var current_refresh_cost: int = 5
 
 func calculate_price(item: Dictionary) -> int:
 	if "price" in item:
@@ -219,18 +220,49 @@ func _rebuild_ui() -> void:
 		if can_afford and not cards_vbox.get_child(0).has_focus():
 			btn.grab_focus()
 			
-	var skip_btn = Button.new()
-	skip_btn.text = "⏭️ Skip & Gain +10 Coins"
-	skip_btn.custom_minimum_size = Vector2(0, 50)
-	skip_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
-	skip_btn.add_theme_font_size_override("font_size", 16)
-	skip_btn.pressed.connect(func():
-		if is_instance_valid(player):
-			player.coins += 10
-			player.coins_changed.emit(player.coins)
-		_close_menu()
-	)
-	left_vbox.add_child(skip_btn)
+	if offered_items.is_empty():
+		var empty_lbl = Label.new()
+		empty_lbl.text = "All offered items purchased! Refresh for more."
+		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_lbl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+		empty_lbl.add_theme_font_size_override("font_size", 16)
+		empty_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
+		cards_vbox.add_child(empty_lbl)
+			
+	var action_hbox = HBoxContainer.new()
+	action_hbox.add_theme_constant_override("separation", 15)
+	left_vbox.add_child(action_hbox)
+	
+	var can_reroll = current_coins >= current_refresh_cost
+	var refresh_btn = Button.new()
+	refresh_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	refresh_btn.custom_minimum_size = Vector2(0, 50)
+	var cost_str = "💰 " + str(current_refresh_cost) + " Coins"
+	refresh_btn.text = ("🔄 Refresh (" + cost_str + ")") if can_reroll else ("❌ Refresh (" + cost_str + ")")
+	refresh_btn.disabled = not can_reroll
+	refresh_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+	refresh_btn.add_theme_font_size_override("font_size", 16)
+	if can_reroll:
+		refresh_btn.add_theme_color_override("font_color", Color(0.7, 0.9, 1.0))
+		refresh_btn.pressed.connect(func():
+			if is_instance_valid(player) and player.coins >= current_refresh_cost:
+				player.coins -= current_refresh_cost
+				player.coins_changed.emit(player.coins)
+				current_refresh_cost += 5
+				_generate_shop_items()
+				_rebuild_ui()
+		)
+	action_hbox.add_child(refresh_btn)
+	
+	var done_btn = Button.new()
+	done_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	done_btn.custom_minimum_size = Vector2(0, 50)
+	done_btn.text = "✅ Done / Continue Game"
+	done_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+	done_btn.add_theme_font_size_override("font_size", 16)
+	done_btn.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
+	done_btn.pressed.connect(_close_menu)
+	action_hbox.add_child(done_btn)
 	
 	# --- RIGHT SIDE: CHARACTER STATS & BUILD ---
 	var right_panel = PanelContainer.new()
@@ -397,7 +429,8 @@ func _buy_item(item: Dictionary, price: int) -> void:
 						w.fire_rate *= (1.0 + val / 100.0)
 						w.update_timer()
 					
-	_close_menu()
+	offered_items.erase(item)
+	_rebuild_ui()
 
 func _sell_weapon(weapon: Node2D, resell_price: int) -> void:
 	var player = get_tree().get_first_node_in_group("player")
