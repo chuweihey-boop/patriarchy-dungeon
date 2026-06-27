@@ -11,24 +11,32 @@ const BROWN_CUBE_SCENE = preload("res://brown_cube.tscn")
 var player: CharacterBody2D = null
 var yellow_circle_timer: float = 0.0
 var brown_cube_timer: float = 0.0
+var can_spawn_brown_cube: bool = false
+var can_spawn_slow_zone: bool = false
 
 func _ready() -> void:
 	# Add dynamically to enemies group
 	add_to_group("enemies")
 	# Find the player in the world scene dynamically
 	player = get_tree().get_first_node_in_group("player")
+	# Only 10% of monsters spawn shit blocks
+	can_spawn_brown_cube = randf() < 0.1
+	# Only 10% of monsters spawn slow zones
+	can_spawn_slow_zone = randf() < 0.1
 
 func _physics_process(delta: float) -> void:
 	# Spawning timers
-	yellow_circle_timer += delta
-	if yellow_circle_timer >= 5.0:
-		yellow_circle_timer = 0.0
-		_spawn_yellow_circle()
+	if can_spawn_slow_zone:
+		yellow_circle_timer += delta
+		if yellow_circle_timer >= 5.0:
+			yellow_circle_timer = 0.0
+			_spawn_yellow_circle()
 		
-	brown_cube_timer += delta
-	if brown_cube_timer >= 10.0:
-		brown_cube_timer = 0.0
-		_spawn_brown_cube()
+	if can_spawn_brown_cube:
+		brown_cube_timer += delta
+		if brown_cube_timer >= 10.0:
+			brown_cube_timer = 0.0
+			_spawn_brown_cube()
 
 	if player:
 		# 1. Get the direction vector pointing toward the player
