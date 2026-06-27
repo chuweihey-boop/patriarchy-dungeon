@@ -1,14 +1,14 @@
 extends CanvasLayer
 
 var stat_weights = {
-	"max_health": 1.0,
-	"regen_speed": 12.0,
-	"speed_pct": 1.5,
-	"damage_pct": 3.0,
-	"near_field_damage_pct": 2.2,
-	"ranged_damage_pct": 2.2,
-	"fire_rate_pct": 6.0,
-	"shield": 15.0
+	"max_health": 2.2,
+	"regen_speed": 26.0,
+	"speed_pct": 3.2,
+	"damage_pct": 5.5,
+	"near_field_damage_pct": 4.0,
+	"ranged_damage_pct": 4.0,
+	"fire_rate_pct": 10.0,
+	"shield": 30.0
 }
 
 var test_items = [
@@ -77,6 +77,42 @@ var test_items = [
 		"title": "🔥 Berserk Charm",
 		"desc": "+18% Damage, -10 Max HP",
 		"stats": {"damage_pct": 18.0, "max_health": -10.0}
+	},
+	{
+		"id": "cheetah_energy",
+		"title": "🏃 Cheetah Energy",
+		"desc": "+15% Move Speed, -6% Weapon Damage",
+		"stats": {"speed_pct": 15.0, "damage_pct": -6.0}
+	},
+	{
+		"id": "leech_seed",
+		"title": "🩸 Leech Seed",
+		"desc": "+1.5 HP Regen/sec, -15 Max HP",
+		"stats": {"regen_speed": 1.5, "max_health": -15.0}
+	},
+	{
+		"id": "espresso_shot",
+		"title": "☕ Espresso Shot",
+		"desc": "+12% Attack Speed, -5% Move Speed",
+		"stats": {"fire_rate_pct": 12.0, "speed_pct": -5.0}
+	},
+	{
+		"id": "heavy_dumbbell",
+		"title": "🏋️ Heavy Dumbbell",
+		"desc": "+20 Max HP, -4% Move Speed",
+		"stats": {"max_health": 20.0, "speed_pct": -4.0}
+	},
+	{
+		"id": "glass_cannon",
+		"title": "🎯 Glass Cannon",
+		"desc": "+25% Ranged Attack Damage, -1 Shield",
+		"stats": {"ranged_damage_pct": 25.0, "shield": -1.0}
+	},
+	{
+		"id": "oni_mask",
+		"title": "👹 Oni Mask",
+		"desc": "+25% Near Field Damage, -0.8 HP Regen/sec",
+		"stats": {"near_field_damage_pct": 25.0, "regen_speed": -0.8}
 	}
 ]
 
