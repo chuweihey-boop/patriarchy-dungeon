@@ -34,6 +34,8 @@ var damage_tween: Tween = null
 
 
 func _ready() -> void:
+	if hurtbox:
+		hurtbox.collision_mask = 3
 	health = max_health
 	# Emit initial values
 	health_changed.emit(health, max_health)
@@ -89,6 +91,8 @@ func _physics_process(delta: float) -> void:
 		for body in overlapping_bodies:
 			if body.is_in_group("enemies"):
 				take_damage(body.damage)
+				if body.has_method("bounce_back"):
+					body.bounce_back(global_position)
 				damage_timer = 0.0
 				break
 
@@ -209,21 +213,52 @@ func _die() -> void:
 	bg.color = Color(0, 0, 0, 0.6)
 	control.add_child(bg)
 	
+	var center = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	control.add_child(center)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 30)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	center.add_child(vbox)
+	
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(400, 140)
+	vbox.add_child(spacer)
+	
 	var effect = Sprite2D.new()
 	effect.set_script(preload("res://effect_sprite.gd"))
-	control.add_child(effect)
-	effect.position = control.get_viewport_rect().size / 2.0
+	spacer.add_child(effect)
+	effect.position = Vector2(200, 70)
 	effect.setup(preload("res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.png"), "res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.txt", 20.0, true)
 	
-	var timer = Timer.new()
-	timer.wait_time = 3.0
-	timer.one_shot = true
-	canvas.add_child(timer)
-	timer.timeout.connect(func():
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 25)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(hbox)
+	
+	var restart_btn = Button.new()
+	restart_btn.text = "🔄 Restart"
+	restart_btn.custom_minimum_size = Vector2(160, 55)
+	restart_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+	restart_btn.add_theme_font_size_override("font_size", 20)
+	restart_btn.pressed.connect(func():
 		get_tree().paused = false
 		get_tree().reload_current_scene()
 	)
-	timer.start()
+	hbox.add_child(restart_btn)
+	
+	var exit_btn = Button.new()
+	exit_btn.text = "🚪 Exit"
+	exit_btn.custom_minimum_size = Vector2(160, 55)
+	exit_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+	exit_btn.add_theme_font_size_override("font_size", 20)
+	exit_btn.pressed.connect(func():
+		get_tree().quit()
+	)
+	hbox.add_child(exit_btn)
+	
+	restart_btn.grab_focus()
 
 func add_slow_zone() -> void:
 	slow_zones_overlapping += 1

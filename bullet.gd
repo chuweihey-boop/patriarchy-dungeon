@@ -12,6 +12,7 @@ const SPLASH_EFFECT_SCRIPT = preload("res://splash_effect.gd")
 var direction: Vector2 = Vector2.RIGHT
 
 func _ready() -> void:
+	collision_mask = 3
 	# Connect the body_entered signal to detect when the bullet hits an enemy
 	body_entered.connect(_on_body_entered)
 	

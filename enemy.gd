@@ -13,10 +13,14 @@ var yellow_circle_timer: float = 0.0
 var brown_cube_timer: float = 0.0
 var can_spawn_brown_cube: bool = false
 var can_spawn_slow_zone: bool = false
+var knockback_velocity: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	# Add dynamically to enemies group
 	add_to_group("enemies")
+	# Enemies on layer 2, collide with player (layer 1) but not each other
+	collision_layer = 2
+	collision_mask = 1
 	# Find the player in the world scene dynamically
 	player = get_tree().get_first_node_in_group("player")
 	# Only 5% of monsters spawn shit blocks
@@ -43,8 +47,15 @@ func _physics_process(delta: float) -> void:
 		var direction = global_position.direction_to(player.global_position)
 		
 		# 2. Set velocity toward player and move
-		velocity = direction * speed
+		velocity = direction * speed + knockback_velocity
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 1800.0 * delta)
 		move_and_slide()
+
+func bounce_back(from_pos: Vector2) -> void:
+	var dir = from_pos.direction_to(global_position)
+	if dir == Vector2.ZERO:
+		dir = Vector2.RIGHT.rotated(randf() * TAU)
+	knockback_velocity = dir * 600.0
 
 func take_damage(amount: float) -> void:
 	health -= amount
