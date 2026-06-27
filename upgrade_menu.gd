@@ -74,6 +74,8 @@ var test_items = [
 	}
 ]
 
+var offered_items: Array = []
+
 func calculate_price(item: Dictionary) -> int:
 	if "price" in item:
 		return item["price"]
@@ -87,7 +89,48 @@ func calculate_price(item: Dictionary) -> int:
 
 func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
+	for child in get_children():
+		child.queue_free()
+		
+	_generate_shop_items()
+	_rebuild_ui()
+
+func _generate_shop_items() -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	var current_weapons = player.get_weapons() if is_instance_valid(player) and player.has_method("get_weapons") else []
 	
+	var pool = test_items.duplicate()
+	if current_weapons.size() < 4:
+		var owned_types = []
+		for w in current_weapons:
+			owned_types.append(w.weapon_type)
+		var names = ["🥚 Egg Basket", "葱 Negi", "🔪 Fish Knife", "🗡️ Wooden Sword"]
+		for tid in [0, 1, 2, 3]:
+			if not tid in owned_types:
+				pool.append({
+					"id": "add_w_" + str(tid),
+					"action_type": "add_weapon",
+					"weapon_type": tid,
+					"title": "➕ Equip " + names[tid],
+					"desc": "Add new weapon (Slot " + str(current_weapons.size() + 1) + "/4)",
+					"price": 35
+				})
+				
+	for w in current_weapons:
+		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
+		pool.append({
+			"id": "up_w_" + str(w.get_instance_id()),
+			"action_type": "upgrade_weapon",
+			"target_weapon": w,
+			"title": "⬆️ Upgrade " + w_name,
+			"desc": "+12% Damage, +8% Attack Speed (to Lv." + str(w.level + 1) + ")",
+			"price": 35 * w.level
+		})
+	
+	pool.shuffle()
+	offered_items = pool.slice(0, min(3, pool.size()))
+
+func _rebuild_ui() -> void:
 	for child in get_children():
 		child.queue_free()
 		
@@ -148,45 +191,13 @@ func _ready() -> void:
 	coins_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	header_hbox.add_child(coins_label)
 	
-	var pool = test_items.duplicate()
-	
-	if current_weapons.size() < 4:
-		var owned_types = []
-		for w in current_weapons:
-			owned_types.append(w.weapon_type)
-		var names = ["🥚 Egg Basket", "葱 Negi", "🔪 Fish Knife", "🗡️ Wooden Sword"]
-		for tid in [0, 1, 2, 3]:
-			if not tid in owned_types:
-				pool.append({
-					"id": "add_w_" + str(tid),
-					"action_type": "add_weapon",
-					"weapon_type": tid,
-					"title": "➕ Equip " + names[tid],
-					"desc": "Add new weapon (Slot " + str(current_weapons.size() + 1) + "/4)",
-					"price": 35
-				})
-				
-	for w in current_weapons:
-		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
-		pool.append({
-			"id": "up_w_" + str(w.get_instance_id()),
-			"action_type": "upgrade_weapon",
-			"target_weapon": w,
-			"title": "⬆️ Upgrade " + w_name,
-			"desc": "+12% Damage, +8% Attack Speed (to Lv." + str(w.level + 1) + ")",
-			"price": 35 * w.level
-		})
-	
-	pool.shuffle()
-	var offered = pool.slice(0, min(3, pool.size()))
-	
 	var cards_vbox = VBoxContainer.new()
 	cards_vbox.add_theme_constant_override("separation", 15)
 	cards_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	cards_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	left_vbox.add_child(cards_vbox)
 	
-	for item in offered:
+	for item in offered_items:
 		var price = calculate_price(item)
 		var can_afford = current_coins >= price
 		
@@ -221,7 +232,7 @@ func _ready() -> void:
 	)
 	left_vbox.add_child(skip_btn)
 	
-	# --- RIGHT SIDE: CHARACTER STATS ---
+	# --- RIGHT SIDE: CHARACTER STATS & BUILD ---
 	var right_panel = PanelContainer.new()
 	right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right_panel.size_flags_stretch_ratio = 0.9
@@ -262,17 +273,39 @@ func _ready() -> void:
 		stats_list.add_child(w_title)
 		
 		for i in range(4):
-			var slot_str = "Slot " + str(i + 1) + ": [Empty]"
+			var slot_row = HBoxContainer.new()
+			stats_list.add_child(slot_row)
+			
 			if i < current_weapons.size():
 				var w = current_weapons[i]
 				var wn = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
-				slot_str = wn + " (Lv." + str(w.level) + ")"
-			var sl = Label.new()
-			sl.text = slot_str
-			sl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
-			sl.add_theme_font_size_override("font_size", 16)
-			sl.add_theme_color_override("font_color", Color(0.8, 0.95, 1.0) if i < current_weapons.size() else Color(0.5, 0.5, 0.6))
-			stats_list.add_child(sl)
+				var resell_price = int(25 * w.level)
+				
+				var wl = Label.new()
+				wl.text = wn + " (Lv." + str(w.level) + ")"
+				wl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+				wl.add_theme_font_size_override("font_size", 16)
+				wl.add_theme_color_override("font_color", Color(0.8, 0.95, 1.0))
+				slot_row.add_child(wl)
+				
+				var sp2 = Control.new()
+				sp2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				slot_row.add_child(sp2)
+				
+				var sell_btn = Button.new()
+				sell_btn.text = "💰 Sell (+" + str(resell_price) + ")"
+				sell_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+				sell_btn.add_theme_font_size_override("font_size", 14)
+				sell_btn.add_theme_color_override("font_color", Color(1.0, 0.7, 0.3))
+				sell_btn.pressed.connect(func(): _sell_weapon(w, resell_price))
+				slot_row.add_child(sell_btn)
+			else:
+				var el = Label.new()
+				el.text = "Slot " + str(i + 1) + ": [Empty]"
+				el.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+				el.add_theme_font_size_override("font_size", 16)
+				el.add_theme_color_override("font_color", Color(0.5, 0.5, 0.6))
+				slot_row.add_child(el)
 
 func _add_stat_row(container: VBoxContainer, label_text: String, val_text: String) -> void:
 	var row = HBoxContainer.new()
@@ -365,6 +398,16 @@ func _buy_item(item: Dictionary, price: int) -> void:
 						w.update_timer()
 					
 	_close_menu()
+
+func _sell_weapon(weapon: Node2D, resell_price: int) -> void:
+	var player = get_tree().get_first_node_in_group("player")
+	if is_instance_valid(player) and is_instance_valid(weapon):
+		player.coins += resell_price
+		player.coins_changed.emit(player.coins)
+		weapon.queue_free()
+		if player.has_method("reposition_weapons"):
+			player.reposition_weapons()
+		_rebuild_ui()
 
 func _close_menu() -> void:
 	get_tree().paused = false
