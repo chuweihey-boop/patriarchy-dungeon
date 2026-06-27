@@ -39,35 +39,19 @@ func _on_body_entered(body: Node) -> void:
 			_apply_splash_damage()
 
 func _apply_splash_damage() -> void:
-	# Spawn splash visual effect
-	var effect = Node2D.new()
-	effect.set_script(SPLASH_EFFECT_SCRIPT)
-	effect.radius = splash_radius
-	effect.global_position = global_position
-	get_tree().current_scene.add_child(effect)
-	
 	var explosion = Sprite2D.new()
 	explosion.set_script(preload("res://effect_sprite.gd"))
 	get_tree().current_scene.add_child(explosion)
 	explosion.global_position = global_position
-	explosion.scale = Vector2(2.5, 2.5)
+	var scale_factor = (2.0 * splash_radius) / 48.0
+	explosion.scale = Vector2(scale_factor, scale_factor)
 	explosion.setup(preload("res://art/effects/explosion/spritesheet.png"), "res://art/effects/explosion/spritesheet.txt", 25.0, false)
 	
-	# Find and damage up to 5 enemies in splash radius
+	# Find and damage all enemies in splash radius
 	var enemies = get_tree().get_nodes_in_group("enemies")
-	var candidates = []
 	for enemy in enemies:
-		if is_instance_valid(enemy):
-			var dist = global_position.distance_to(enemy.global_position)
-			if dist <= splash_radius:
-				candidates.append({"enemy": enemy, "dist": dist})
-				
-	candidates.sort_custom(func(a, b): return a.dist < b.dist)
-	
-	var target_count = min(max_splash_targets, candidates.size())
-	for i in range(target_count):
-		var enemy = candidates[i]["enemy"]
 		if is_instance_valid(enemy) and enemy.has_method("take_damage"):
-			enemy.take_damage(damage)
+			if global_position.distance_to(enemy.global_position) <= splash_radius:
+				enemy.take_damage(damage)
 			
 	queue_free()
