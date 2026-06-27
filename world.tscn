@@ -17,7 +17,7 @@ region_enabled = true
 region_rect = Rect2(-10000, -10000, 20000, 20000)
 
 [node name="EnemySpawner" type="Timer" parent="." unique_id=736189279]
-wait_time = 2.0
+wait_time = 1.0
 autostart = true
 
 [node name="CharacterBody2D" parent="." unique_id=1094734210 instance=ExtResource("1_f3sb7")]

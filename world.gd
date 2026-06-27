@@ -6,11 +6,17 @@ const UPGRADE_MENU_SCENE = preload("res://upgrade_menu.tscn")
 @onready var player = get_tree().get_first_node_in_group("player")
 @onready var hud = $HUD
 
-var time_elapsed: float = 0.0
+var current_round: int = 1
+const ROUND_DURATION: float = 180.0 # 3 minutes per round
+var round_time_remaining: float = ROUND_DURATION
+var wave_warning_shown: bool = false
+var game_won: bool = false
+
 var merge_timer: float = 0.0
 const MERGE_INTERVAL: float = 1.0
 
 func _ready() -> void:
+	$EnemySpawner.wait_time = 1.0
 	if player:
 		# Connect player signals to HUD
 		player.health_changed.connect(hud.update_health)
@@ -23,15 +29,35 @@ func _ready() -> void:
 		hud.update_xp(player.experience, player.experience_required)
 		hud.update_level(player.level)
 		hud.update_coins(player.coins)
+		hud.update_timer(round_time_remaining, current_round)
 		
 	# Instantiate and display starting weapon selection menu
 	var weapon_selection = preload("res://weapon_selection_menu.tscn").instantiate()
 	add_child(weapon_selection)
 
 func _process(delta: float) -> void:
-	if not get_tree().paused:
-		time_elapsed += delta
-		hud.update_timer(time_elapsed)
+	if not get_tree().paused and not game_won:
+		round_time_remaining -= delta
+		if round_time_remaining <= 0.0:
+			current_round += 1
+			if current_round > 5:
+				game_won = true
+				round_time_remaining = 0.0
+				hud.update_timer(0.0, 5)
+				hud.show_wave_warning("VICTORY! ALL 5 ROUNDS SURVIVED!")
+				$EnemySpawner.stop()
+				return
+			else:
+				round_time_remaining = ROUND_DURATION
+				wave_warning_shown = false
+				hud.show_wave_warning("ROUND %d START!" % current_round)
+				
+		# Check for last 1 minute wave warning
+		if round_time_remaining <= 60.0 and not wave_warning_shown:
+			wave_warning_shown = true
+			hud.show_wave_warning("MONSTER WAVE IS COMING!")
+			
+		hud.update_timer(round_time_remaining, current_round)
 		
 		# Merge coins check
 		merge_timer += delta
@@ -40,25 +66,32 @@ func _process(delta: float) -> void:
 			_check_and_merge_coins()
 
 func _on_enemy_spawner_timeout() -> void:
-	if not player:
+	if not player or game_won:
 		return
 		
-	# Instantiate a new copy of the Enemy
-	var new_enemy = ENEMY_SCENE.instantiate()
-	
-	# Use polar coordinates to pick a random direction vector
-	var random_angle = randf_range(0.0, 2 * PI)
-	var spawn_direction = Vector2(cos(random_angle), sin(random_angle))
-	
-	# Multiply direction by distance (~700-800 pixels is just off-screen)
-	var spawn_distance = 750.0
-	var spawn_offset = spawn_direction * spawn_distance
-	
-	# Position the enemy relative to where the player currently is
-	new_enemy.global_position = player.global_position + spawn_offset
-	
-	# Inject the enemy into the active game loop
-	add_child(new_enemy)
+	# Determine spawn count and speed (2x during last 1 minute wave)
+	var spawn_count = 1 + current_round # R1: 2, R2: 3, R3: 4, R4: 5, R5: 6
+	var is_wave = round_time_remaining <= 60.0
+	if is_wave:
+		spawn_count *= 2
+		$EnemySpawner.wait_time = max(0.15, (1.0 - (current_round - 1) * 0.15) * 0.5)
+	else:
+		$EnemySpawner.wait_time = max(0.25, 1.0 - (current_round - 1) * 0.15)
+		
+	for i in range(spawn_count):
+		var new_enemy = ENEMY_SCENE.instantiate()
+		
+		# Scale enemy HP and Damage based on round
+		new_enemy.health = 12.0 * (1.0 + (current_round - 1) * 0.5)
+		new_enemy.damage = 10.0 * (1.0 + (current_round - 1) * 0.3)
+		
+		var random_angle = randf_range(0.0, 2 * PI)
+		var spawn_direction = Vector2(cos(random_angle), sin(random_angle))
+		var spawn_distance = randf_range(700.0, 850.0)
+		var spawn_offset = spawn_direction * spawn_distance
+		
+		new_enemy.global_position = player.global_position + spawn_offset
+		add_child(new_enemy)
 
 func _on_player_level_up(new_level: int) -> void:
 	hud.update_level(new_level)
