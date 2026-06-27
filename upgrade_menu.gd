@@ -4,10 +4,10 @@ var stat_weights = {
 	"max_health": 1.0,
 	"regen_speed": 12.0,
 	"speed_pct": 1.5,
-	"damage_pct": 2.0,
-	"near_field_damage_pct": 1.5,
-	"ranged_damage_pct": 1.5,
-	"fire_rate_pct": 2.0,
+	"damage_pct": 3.0,
+	"near_field_damage_pct": 2.2,
+	"ranged_damage_pct": 2.2,
+	"fire_rate_pct": 6.0,
 	"shield": 15.0
 }
 
@@ -15,62 +15,68 @@ var test_items = [
 	{
 		"id": "iron_fist",
 		"title": "🥊 Iron Knuckles",
-		"desc": "+25% Near Field Damage",
-		"stats": {"near_field_damage_pct": 25.0}
+		"desc": "+12% Near Field Damage",
+		"stats": {"near_field_damage_pct": 12.0}
 	},
 	{
 		"id": "sniper_lens",
 		"title": "🔭 Sniper Scope",
-		"desc": "+25% Ranged Attack Damage",
-		"stats": {"ranged_damage_pct": 25.0}
+		"desc": "+12% Ranged Attack Damage",
+		"stats": {"ranged_damage_pct": 12.0}
 	},
 	{
 		"id": "master_seal",
 		"title": "☯️ Master Emblem",
-		"desc": "+15% Near Field & +15% Ranged Damage",
-		"stats": {"near_field_damage_pct": 15.0, "ranged_damage_pct": 15.0}
+		"desc": "+8% Near Field & +8% Ranged Damage",
+		"stats": {"near_field_damage_pct": 8.0, "ranged_damage_pct": 8.0}
 	},
 	{
 		"id": "vitality",
 		"title": "❤️ Vitality Ring",
-		"desc": "+25 Max HP",
-		"stats": {"max_health": 25.0}
+		"desc": "+15 Max HP",
+		"stats": {"max_health": 15.0}
 	},
 	{
 		"id": "troll_blood",
 		"title": "🌿 Troll Blood",
-		"desc": "+2 HP Regen/sec",
-		"stats": {"regen_speed": 2.0}
+		"desc": "+1 HP Regen/sec",
+		"stats": {"regen_speed": 1.0}
 	},
 	{
 		"id": "hermes",
 		"title": "⚡ Hermes Boots",
-		"desc": "+15% Move Speed",
-		"stats": {"speed_pct": 15.0}
+		"desc": "+8% Move Speed",
+		"stats": {"speed_pct": 8.0}
 	},
 	{
 		"id": "whetstone",
 		"title": "⚔️ Whetstone",
-		"desc": "+20% Weapon Damage",
-		"stats": {"damage_pct": 20.0}
+		"desc": "+10% Weapon Damage",
+		"stats": {"damage_pct": 10.0}
 	},
 	{
 		"id": "rapid_string",
 		"title": "🏹 Rapid String",
-		"desc": "+20% Attack Speed",
-		"stats": {"fire_rate_pct": 20.0}
+		"desc": "+5% Attack Speed",
+		"stats": {"fire_rate_pct": 5.0}
+	},
+	{
+		"id": "ranger_kit",
+		"title": "🪶 Ranger Kit",
+		"desc": "+3% Attack Speed & +5% Damage",
+		"stats": {"fire_rate_pct": 3.0, "damage_pct": 5.0}
 	},
 	{
 		"id": "iron_plate",
 		"title": "🛡️ Iron Plating",
-		"desc": "+2 Shield, -5% Move Speed",
-		"stats": {"shield": 2.0, "speed_pct": -5.0}
+		"desc": "+1 Shield, -3% Move Speed",
+		"stats": {"shield": 1.0, "speed_pct": -3.0}
 	},
 	{
 		"id": "berserk",
 		"title": "🔥 Berserk Charm",
-		"desc": "+30% Damage, -10 Max HP",
-		"stats": {"damage_pct": 30.0, "max_health": -10.0}
+		"desc": "+18% Damage, -10 Max HP",
+		"stats": {"damage_pct": 18.0, "max_health": -10.0}
 	}
 ]
 
@@ -114,7 +120,7 @@ func _generate_shop_items() -> void:
 					"weapon_type": tid,
 					"title": "➕ Equip " + names[tid],
 					"desc": "Add new weapon (Slot " + str(current_weapons.size() + 1) + "/4)",
-					"price": 35
+					"price": 50
 				})
 				
 	for w in current_weapons:
@@ -124,8 +130,8 @@ func _generate_shop_items() -> void:
 			"action_type": "upgrade_weapon",
 			"target_weapon": w,
 			"title": "⬆️ Upgrade " + w_name,
-			"desc": "+12% Damage, +8% Attack Speed (to Lv." + str(w.level + 1) + ")",
-			"price": 35 * w.level
+			"desc": "+8% Damage, +4% Attack Speed (to Lv." + str(w.level + 1) + ")",
+			"price": 45 * w.level
 		})
 	
 	pool.shuffle()
@@ -397,8 +403,8 @@ func _buy_item(item: Dictionary, price: int) -> void:
 		var w = item["target_weapon"]
 		if is_instance_valid(w):
 			w.level += 1
-			w.damage_multiplier *= 1.12
-			w.fire_rate *= 1.08
+			w.damage_multiplier *= 1.08
+			w.fire_rate *= 1.04
 			w.update_timer()
 	else:
 		var stats = item.get("stats", {})
