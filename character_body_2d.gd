@@ -14,7 +14,7 @@ signal coins_changed(current_coins: int)
 var health: float = 100.0
 var level: int = 1
 var experience: int = 0
-var experience_required: int = 10
+var experience_required: int = 90
 var coins: int = 0
 
 # Character Stats
@@ -213,7 +213,7 @@ func gain_xp(amount: int) -> void:
 		# Level up!
 		experience -= experience_required
 		level += 1
-		experience_required = int(experience_required * 1.5) # Increase requirement for next level
+		experience_required = int(experience_required * 1.6 + 20 * level)
 		level_up.emit(level)
 		
 	experience_changed.emit(experience, experience_required)
