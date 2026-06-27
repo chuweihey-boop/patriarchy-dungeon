@@ -15,12 +15,11 @@ func _ready() -> void:
 func update_health(current: float, max_health: float) -> void:
 	health_bar.max_value = max_health
 	health_bar.value = current
-	health_bar.get_node("Label").text = "HP: %d / %d" % [int(current), int(max_health)]
+	health_bar.get_node("Label").text = "%d/%d" % [int(current), int(max_health)]
 
 func update_xp(current: int, required: int) -> void:
 	xp_bar.max_value = required
 	xp_bar.value = current
-	xp_bar.get_node("Label").text = "XP: %d / %d" % [current, required]
 
 func update_level(level: int) -> void:
 	level_label.text = "LEVEL %d" % level
