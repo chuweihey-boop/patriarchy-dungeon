@@ -91,10 +91,16 @@ func _physics_process(delta: float) -> void:
 		for body in overlapping_bodies:
 			if body.is_in_group("enemies"):
 				take_damage(body.damage)
-				if body.has_method("bounce_back"):
-					body.bounce_back(global_position)
+				_bounce_nearby_enemies(150.0)
 				damage_timer = 0.0
 				break
+
+func _bounce_nearby_enemies(radius: float) -> void:
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	for enemy in enemies:
+		if is_instance_valid(enemy) and enemy.has_method("bounce_back"):
+			if global_position.distance_to(enemy.global_position) <= radius:
+				enemy.bounce_back(global_position)
 
 func take_damage(amount: float) -> void:
 	# Shield reduces damage, minimum 1.0 damage taken
