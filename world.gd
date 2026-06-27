@@ -53,17 +53,6 @@ func _process(delta: float) -> void:
 				round_time_remaining = ROUND_DURATION
 				wave_warning_shown = false
 				hud.show_wave_warning("ROUND %d START!" % current_round)
-
-func _clear_world() -> void:
-	for enemy in get_tree().get_nodes_in_group("enemies"):
-		if is_instance_valid(enemy):
-			enemy.queue_free()
-	for child in get_children():
-		if child is EffectSprite:
-			child.queue_free()
-	for node in get_tree().current_scene.get_children():
-		if "SlowZone" in node.name or "BrownCube" in node.name:
-			node.queue_free()
 				
 		# Check for last 1 minute wave warning
 		if round_time_remaining <= 60.0 and not wave_warning_shown:
