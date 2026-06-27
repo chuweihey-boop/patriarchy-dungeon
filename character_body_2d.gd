@@ -114,8 +114,37 @@ func gain_xp(amount: int) -> void:
 
 func _die() -> void:
 	print("Player Died!")
-	# Reload current scene to restart
-	get_tree().reload_current_scene()
+	get_tree().paused = true
+	
+	var canvas = CanvasLayer.new()
+	canvas.process_mode = PROCESS_MODE_ALWAYS
+	canvas.layer = 100
+	get_tree().current_scene.add_child(canvas)
+	
+	var control = Control.new()
+	control.set_anchors_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(control)
+	
+	var bg = ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0, 0, 0, 0.6)
+	control.add_child(bg)
+	
+	var effect = Sprite2D.new()
+	effect.set_script(preload("res://effect_sprite.gd"))
+	control.add_child(effect)
+	effect.position = control.get_viewport_rect().size / 2.0
+	effect.setup(preload("res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.png"), "res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.txt", 20.0, true)
+	
+	var timer = Timer.new()
+	timer.wait_time = 3.0
+	timer.one_shot = true
+	canvas.add_child(timer)
+	timer.timeout.connect(func():
+		get_tree().paused = false
+		get_tree().reload_current_scene()
+	)
+	timer.start()
 
 func add_slow_zone() -> void:
 	slow_zones_overlapping += 1

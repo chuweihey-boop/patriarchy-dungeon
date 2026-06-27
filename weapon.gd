@@ -93,6 +93,7 @@ func _shoot(target: CharacterBody2D) -> void:
 			bullet.get_node("Sprite2D").scale = Vector2(2.5, 2.5)
 			bullet.get_node("CollisionShape2D").scale = Vector2(2.8, 2.8)
 			bullet.rotation = bullet.direction.angle() - 0.6
+			_spawn_directional_impact(bullet.global_position, bullet.direction)
 			
 		WeaponType.FISHKNIFE:
 			bullet.speed = 0.0
@@ -104,6 +105,7 @@ func _shoot(target: CharacterBody2D) -> void:
 			bullet.get_node("Sprite2D").scale = Vector2(3.0, 3.0)
 			bullet.get_node("CollisionShape2D").scale = Vector2(3.3, 3.3)
 			bullet.rotation = bullet.direction.angle() - 0.6
+			_spawn_directional_impact(bullet.global_position, bullet.direction)
 			
 		WeaponType.WOODENSWORD:
 			bullet.speed = 0.0
@@ -115,6 +117,16 @@ func _shoot(target: CharacterBody2D) -> void:
 			bullet.get_node("Sprite2D").scale = Vector2(2.2, 2.2)
 			bullet.get_node("CollisionShape2D").scale = Vector2(2.5, 2.5)
 			bullet.rotation = bullet.direction.angle() - 0.6
+			_spawn_directional_impact(bullet.global_position, bullet.direction)
 
 	# Add the bullet to the world/root scene so it doesn't move with the player
 	get_tree().current_scene.add_child(bullet)
+
+func _spawn_directional_impact(pos: Vector2, dir: Vector2) -> void:
+	var effect = Sprite2D.new()
+	effect.set_script(preload("res://effect_sprite.gd"))
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = pos
+	effect.rotation = dir.angle()
+	effect.scale = Vector2(2.5, 2.5)
+	effect.setup(preload("res://art/effects/directional_impact/spritesheet.png"), "res://art/effects/directional_impact/spritesheet.txt", 20.0, false)

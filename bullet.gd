@@ -45,6 +45,13 @@ func _apply_splash_damage() -> void:
 	effect.global_position = global_position
 	get_tree().current_scene.add_child(effect)
 	
+	var explosion = Sprite2D.new()
+	explosion.set_script(preload("res://effect_sprite.gd"))
+	get_tree().current_scene.add_child(explosion)
+	explosion.global_position = global_position
+	explosion.scale = Vector2(2.5, 2.5)
+	explosion.setup(preload("res://art/effects/explosion/spritesheet.png"), "res://art/effects/explosion/spritesheet.txt", 25.0, false)
+	
 	# Find and damage up to 5 enemies in splash radius
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	var candidates = []

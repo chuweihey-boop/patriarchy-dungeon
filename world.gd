@@ -80,19 +80,34 @@ func _on_enemy_spawner_timeout() -> void:
 		$EnemySpawner.wait_time = max(0.25, 1.0 - (current_round - 1) * 0.15)
 		
 	for i in range(spawn_count):
-		var new_enemy = ENEMY_SCENE.instantiate()
-		
-		# Scale enemy HP and Damage based on round
-		new_enemy.health = 12.0 * (1.0 + (current_round - 1) * 0.5)
-		new_enemy.damage = 10.0 * (1.0 + (current_round - 1) * 0.3)
-		
 		var random_angle = randf_range(0.0, 2 * PI)
 		var spawn_direction = Vector2(cos(random_angle), sin(random_angle))
 		var spawn_distance = randf_range(700.0, 850.0)
 		var spawn_offset = spawn_direction * spawn_distance
+		var spawn_pos = player.global_position + spawn_offset
 		
-		new_enemy.global_position = player.global_position + spawn_offset
+		var enemy_hp = 12.0 * (1.0 + (current_round - 1) * 0.5)
+		var enemy_dmg = 10.0 * (1.0 + (current_round - 1) * 0.3)
+		
+		_spawn_alert_and_enemy(spawn_pos, enemy_hp, enemy_dmg)
+
+func _spawn_alert_and_enemy(spawn_pos: Vector2, hp: float, dmg: float) -> void:
+	var effect = Sprite2D.new()
+	effect.set_script(preload("res://effect_sprite.gd"))
+	add_child(effect)
+	effect.global_position = spawn_pos
+	effect.scale = Vector2(2.5, 2.5)
+	effect.setup(preload("res://art/effects/alert/spritesheet.png"), "res://art/effects/alert/spritesheet.txt", 20.0, false)
+	
+	effect.animation_finished.connect(func():
+		if not is_instance_valid(player) or game_won:
+			return
+		var new_enemy = ENEMY_SCENE.instantiate()
+		new_enemy.health = hp
+		new_enemy.damage = dmg
+		new_enemy.global_position = spawn_pos
 		add_child(new_enemy)
+	)
 
 func _on_player_level_up(new_level: int) -> void:
 	hud.update_level(new_level)
