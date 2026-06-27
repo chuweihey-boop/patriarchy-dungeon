@@ -5,6 +5,15 @@ enum WeaponType { EGGBUSKET, NEGI, FISHKNIFE, WOODENSWORD }
 @export var bullet_scene: PackedScene = preload("res://bullet.tscn")
 @export var weapon_type: WeaponType = WeaponType.EGGBUSKET
 @export var damage_multiplier: float = 1.0
+var level: int = 1
+
+func get_weapon_name() -> String:
+	match weapon_type:
+		WeaponType.EGGBUSKET: return "🥚 Egg Basket"
+		WeaponType.NEGI: return "葱 Negi"
+		WeaponType.FISHKNIFE: return "🔪 Fish Knife"
+		WeaponType.WOODENSWORD: return "🗡️ Wooden Sword"
+	return "Weapon"
 
 var fire_rate: float = 1.0 # Shots per second
 var shoot_range: float = 600.0
@@ -68,7 +77,8 @@ func _shoot(target: CharacterBody2D) -> void:
 	match weapon_type:
 		WeaponType.EGGBUSKET:
 			bullet.speed = 600.0
-			bullet.damage = 10.0 * damage_multiplier
+			var r_mod = player.ranged_damage_modifier if is_instance_valid(player) and "ranged_damage_modifier" in player else 1.0
+			bullet.damage = 10.0 * damage_multiplier * r_mod
 			bullet.lifetime = 1.2
 			bullet.is_melee = false
 			
@@ -85,7 +95,8 @@ func _shoot(target: CharacterBody2D) -> void:
 			
 		WeaponType.NEGI:
 			bullet.speed = 0.0
-			bullet.damage = 14.0 * damage_multiplier
+			var n_mod = player.near_field_damage_modifier if is_instance_valid(player) and "near_field_damage_modifier" in player else 1.0
+			bullet.damage = 14.0 * damage_multiplier * n_mod
 			bullet.lifetime = 0.2
 			bullet.is_melee = true
 			bullet.global_position = global_position + bullet.direction * 80.0
@@ -97,7 +108,8 @@ func _shoot(target: CharacterBody2D) -> void:
 			
 		WeaponType.FISHKNIFE:
 			bullet.speed = 0.0
-			bullet.damage = 32.0 * damage_multiplier
+			var n_mod = player.near_field_damage_modifier if is_instance_valid(player) and "near_field_damage_modifier" in player else 1.0
+			bullet.damage = 32.0 * damage_multiplier * n_mod
 			bullet.lifetime = 0.3
 			bullet.is_melee = true
 			bullet.global_position = global_position + bullet.direction * 80.0
@@ -109,7 +121,8 @@ func _shoot(target: CharacterBody2D) -> void:
 			
 		WeaponType.WOODENSWORD:
 			bullet.speed = 0.0
-			bullet.damage = 8.0 * damage_multiplier
+			var n_mod = player.near_field_damage_modifier if is_instance_valid(player) and "near_field_damage_modifier" in player else 1.0
+			bullet.damage = 8.0 * damage_multiplier * n_mod
 			bullet.lifetime = 0.12
 			bullet.is_melee = true
 			bullet.global_position = global_position + bullet.direction * 80.0

@@ -21,6 +21,8 @@ var coins: int = 0
 var default_speed: float = 300.0
 var attack_frequency_modifier: float = 1.0
 var attack_range_modifier: float = 1.0
+var near_field_damage_modifier: float = 1.0
+var ranged_damage_modifier: float = 1.0
 var regen_speed: float = 0.0
 var shield: int = 0
 var current_dir: String = "down"
@@ -40,6 +42,21 @@ func _ready() -> void:
 	# Emit initial values
 	health_changed.emit(health, max_health)
 	experience_changed.emit(experience, experience_required)
+	reposition_weapons()
+
+func get_weapons() -> Array:
+	var list = []
+	for child in get_children():
+		if "weapon_type" in child and "damage_multiplier" in child:
+			list.append(child)
+	return list
+
+func reposition_weapons() -> void:
+	var w_list = get_weapons()
+	var offsets = [Vector2(-25, -25), Vector2(25, -25), Vector2(-25, 25), Vector2(25, 25)]
+	for i in range(w_list.size()):
+		if i < offsets.size():
+			w_list[i].position = offsets[i]
 
 func _physics_process(delta: float) -> void:
 	# HP Regeneration over time

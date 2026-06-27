@@ -5,11 +5,31 @@ var stat_weights = {
 	"regen_speed": 12.0,
 	"speed_pct": 1.5,
 	"damage_pct": 2.0,
+	"near_field_damage_pct": 1.5,
+	"ranged_damage_pct": 1.5,
 	"fire_rate_pct": 2.0,
 	"shield": 15.0
 }
 
 var test_items = [
+	{
+		"id": "iron_fist",
+		"title": "🥊 Iron Knuckles",
+		"desc": "+25% Near Field Damage",
+		"stats": {"near_field_damage_pct": 25.0}
+	},
+	{
+		"id": "sniper_lens",
+		"title": "🔭 Sniper Scope",
+		"desc": "+25% Ranged Attack Damage",
+		"stats": {"ranged_damage_pct": 25.0}
+	},
+	{
+		"id": "master_seal",
+		"title": "☯️ Master Emblem",
+		"desc": "+15% Near Field & +15% Ranged Damage",
+		"stats": {"near_field_damage_pct": 15.0, "ranged_damage_pct": 15.0}
+	},
 	{
 		"id": "vitality",
 		"title": "❤️ Vitality Ring",
@@ -55,6 +75,8 @@ var test_items = [
 ]
 
 func calculate_price(item: Dictionary) -> int:
+	if "price" in item:
+		return item["price"]
 	var total = 0.0
 	var stats = item.get("stats", {})
 	for stat_name in stats:
@@ -82,8 +104,8 @@ func _ready() -> void:
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
 	margin.add_theme_constant_override("margin_left", 60)
 	margin.add_theme_constant_override("margin_right", 60)
-	margin.add_theme_constant_override("margin_top", 50)
-	margin.add_theme_constant_override("margin_bottom", 50)
+	margin.add_theme_constant_override("margin_top", 40)
+	margin.add_theme_constant_override("margin_bottom", 40)
 	root.add_child(margin)
 	
 	var hbox = HBoxContainer.new()
@@ -92,6 +114,7 @@ func _ready() -> void:
 	
 	var player = get_tree().get_first_node_in_group("player")
 	var current_coins = player.coins if is_instance_valid(player) else 0
+	var current_weapons = player.get_weapons() if is_instance_valid(player) and player.has_method("get_weapons") else []
 	
 	# --- LEFT SIDE: UPGRADE SELECTION ---
 	var left_panel = PanelContainer.new()
@@ -108,7 +131,7 @@ func _ready() -> void:
 	left_vbox.add_child(header_hbox)
 	
 	var title = Label.new()
-	title.text = "🛒 LEVEL UP SELECTION"
+	title.text = "🛒 LEVEL UP SHOP"
 	title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color(0.9, 0.9, 1.0))
@@ -125,7 +148,38 @@ func _ready() -> void:
 	coins_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	header_hbox.add_child(coins_label)
 	
+	# Build shop pool
 	var pool = test_items.duplicate()
+	
+	# Offer new weapons if quotas < 4
+	if current_weapons.size() < 4:
+		var owned_types = []
+		for w in current_weapons:
+			owned_types.append(w.weapon_type)
+		var names = ["🥚 Egg Basket", "葱 Negi", "🔪 Fish Knife", "🗡️ Wooden Sword"]
+		for tid in [0, 1, 2, 3]:
+			if not tid in owned_types:
+				pool.append({
+					"id": "add_w_%d" % tid,
+					"action_type": "add_weapon",
+					"weapon_type": tid,
+					"title": "➕ Equip %s" % names[tid],
+					"desc": "Add new weapon (Slot %d/4)" % (current_weapons.size() + 1),
+					"price": 35
+				})
+				
+	# Offer weapon upgrades for owned weapons
+	for w in current_weapons:
+		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
+		pool.append({
+			"id": "up_w_%d" % w.get_instance_id(),
+			"action_type": "upgrade_weapon",
+			"target_weapon": w,
+			"title": "⬆️ Upgrade %s" % w_name,
+			"desc": "+12% Damage, +8% Attack Speed (to Lv.%d)" % (w.level + 1),
+			"price": 35 * w.level
+		})
+	
 	pool.shuffle()
 	var offered = pool.slice(0, min(3, pool.size()))
 	
@@ -178,31 +232,50 @@ func _ready() -> void:
 	hbox.add_child(right_panel)
 	
 	var right_vbox = VBoxContainer.new()
-	right_vbox.add_theme_constant_override("separation", 20)
+	right_vbox.add_theme_constant_override("separation", 15)
 	right_panel.add_child(right_vbox)
 	
 	var stat_title = Label.new()
-	stat_title.text = "📊 CHARACTER STATS"
+	stat_title.text = "📊 CHARACTER & BUILD"
 	stat_title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	stat_title.add_theme_font_size_override("font_size", 24)
 	stat_title.add_theme_color_override("font_color", Color(1.0, 0.9, 0.95))
 	right_vbox.add_child(stat_title)
 	
 	var stats_list = VBoxContainer.new()
-	stats_list.add_theme_constant_override("separation", 12)
+	stats_list.add_theme_constant_override("separation", 8)
 	right_vbox.add_child(stats_list)
 	
 	if is_instance_valid(player):
-		var weapon = player.get_node_or_null("Weapon")
-		var dmg_mult = weapon.damage_multiplier * 100.0 if weapon else 100.0
-		var fire_mult = weapon.fire_rate if weapon else 1.0
-		
 		_add_stat_row(stats_list, "❤️ Max HP", str(int(player.max_health)))
 		_add_stat_row(stats_list, "🌿 HP Regen", "%.1f / sec" % player.regen_speed)
 		_add_stat_row(stats_list, "🛡️ Shield", str(player.shield))
 		_add_stat_row(stats_list, "⚡ Move Speed", str(int(player.default_speed)))
-		_add_stat_row(stats_list, "⚔️ Damage Mult", "%d%%" % int(dmg_mult))
-		_add_stat_row(stats_list, "🏹 Attack Speed", "%.1f shots/s" % fire_mult)
+		
+		var near_pct = int(player.near_field_damage_modifier * 100.0)
+		var range_pct = int(player.ranged_damage_modifier * 100.0)
+		_add_stat_row(stats_list, "🥊 Near Field Dmg", "%d%%" % near_pct)
+		_add_stat_row(stats_list, "🔭 Ranged Dmg", "%d%%" % range_pct)
+		
+		var w_title = Label.new()
+		w_title.text = "\n🗡️ WEAPON QUOTAS (%d / 4)" % current_weapons.size()
+		w_title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+		w_title.add_theme_font_size_override("font_size", 20)
+		w_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+		stats_list.add_child(w_title)
+		
+		for i in range(4):
+			var slot_str = "Slot %d: [Empty]" % (i + 1)
+			if i < current_weapons.size():
+				var w = current_weapons[i]
+				var wn = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
+				slot_str = "%s (Lv.%d)" % [wn, w.level]
+			var sl = Label.new()
+			sl.text = slot_str
+			sl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+			sl.add_theme_font_size_override("font_size", 16)
+			sl.add_theme_color_override("font_color", Color(0.8, 0.95, 1.0) if i < current_weapons.size() else Color(0.5, 0.5, 0.6))
+			stats_list.add_child(sl)
 
 func _add_stat_row(container: VBoxContainer, label_text: String, val_text: String) -> void:
 	var row = HBoxContainer.new()
@@ -238,8 +311,8 @@ func _apply_panel_style(panel: PanelContainer, bg_color: Color) -> void:
 	style.corner_radius_bottom_left = 16
 	style.content_margin_left = 25
 	style.content_margin_right = 25
-	style.content_margin_top = 25
-	style.content_margin_bottom = 25
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
 	panel.add_theme_stylebox_override("panel", style)
 
 func _buy_item(item: Dictionary, price: int) -> void:
@@ -251,31 +324,48 @@ func _buy_item(item: Dictionary, price: int) -> void:
 	player.coins -= price
 	player.coins_changed.emit(player.coins)
 	
-	var stats = item.get("stats", {})
-	for stat_name in stats:
-		var val = stats[stat_name]
-		match stat_name:
-			"max_health":
-				player.max_health += val
-				player.health = min(player.max_health, player.health + max(0.0, val))
-				player.health_changed.emit(player.health, player.max_health)
-			"regen_speed":
-				player.regen_speed += val
-			"speed_pct":
-				player.default_speed *= (1.0 + val / 100.0)
-				if player.has_method("_update_speed"):
-					player._update_speed()
-			"shield":
-				player.shield += int(val)
-			"damage_pct":
-				var weapon = player.get_node_or_null("Weapon")
-				if weapon:
-					weapon.damage_multiplier *= (1.0 + val / 100.0)
-			"fire_rate_pct":
-				var weapon = player.get_node_or_null("Weapon")
-				if weapon:
-					weapon.fire_rate *= (1.0 + val / 100.0)
-					weapon.update_timer()
+	var action = item.get("action_type", "stat")
+	if action == "add_weapon":
+		var new_w = preload("res://weapon.tscn").instantiate()
+		new_w.weapon_type = item["weapon_type"]
+		player.add_child(new_w)
+		if player.has_method("reposition_weapons"):
+			player.reposition_weapons()
+	elif action == "upgrade_weapon":
+		var w = item["target_weapon"]
+		if is_instance_valid(w):
+			w.level += 1
+			w.damage_multiplier *= 1.12
+			w.fire_rate *= 1.08
+			w.update_timer()
+	else:
+		var stats = item.get("stats", {})
+		for stat_name in stats:
+			var val = stats[stat_name]
+			match stat_name:
+				"max_health":
+					player.max_health += val
+					player.health = min(player.max_health, player.health + max(0.0, val))
+					player.health_changed.emit(player.health, player.max_health)
+				"regen_speed":
+					player.regen_speed += val
+				"speed_pct":
+					player.default_speed *= (1.0 + val / 100.0)
+					if player.has_method("_update_speed"):
+						player._update_speed()
+				"shield":
+					player.shield += int(val)
+				"near_field_damage_pct":
+					player.near_field_damage_modifier += val / 100.0
+				"ranged_damage_pct":
+					player.ranged_damage_modifier += val / 100.0
+				"damage_pct":
+					for w in player.get_weapons() if player.has_method("get_weapons") else []:
+						w.damage_multiplier *= (1.0 + val / 100.0)
+				"fire_rate_pct":
+					for w in player.get_weapons() if player.has_method("get_weapons") else []:
+						w.fire_rate *= (1.0 + val / 100.0)
+						w.update_timer()
 					
 	_close_menu()
 
