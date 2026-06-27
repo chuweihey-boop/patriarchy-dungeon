@@ -142,16 +142,14 @@ func _ready() -> void:
 	header_hbox.add_child(spacer)
 	
 	var coins_label = Label.new()
-	coins_label.text = "💰 Coins: %d" % current_coins
+	coins_label.text = "💰 Coins: " + str(current_coins)
 	coins_label.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	coins_label.add_theme_font_size_override("font_size", 22)
 	coins_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
 	header_hbox.add_child(coins_label)
 	
-	# Build shop pool
 	var pool = test_items.duplicate()
 	
-	# Offer new weapons if quotas < 4
 	if current_weapons.size() < 4:
 		var owned_types = []
 		for w in current_weapons:
@@ -160,23 +158,22 @@ func _ready() -> void:
 		for tid in [0, 1, 2, 3]:
 			if not tid in owned_types:
 				pool.append({
-					"id": "add_w_%d" % tid,
+					"id": "add_w_" + str(tid),
 					"action_type": "add_weapon",
 					"weapon_type": tid,
-					"title": "➕ Equip %s" % names[tid],
-					"desc": "Add new weapon (Slot %d/4)" % (current_weapons.size() + 1),
+					"title": "➕ Equip " + names[tid],
+					"desc": "Add new weapon (Slot " + str(current_weapons.size() + 1) + "/4)",
 					"price": 35
 				})
 				
-	# Offer weapon upgrades for owned weapons
 	for w in current_weapons:
 		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
 		pool.append({
-			"id": "up_w_%d" % w.get_instance_id(),
+			"id": "up_w_" + str(w.get_instance_id()),
 			"action_type": "upgrade_weapon",
 			"target_weapon": w,
-			"title": "⬆️ Upgrade %s" % w_name,
-			"desc": "+12% Damage, +8% Attack Speed (to Lv.%d)" % (w.level + 1),
+			"title": "⬆️ Upgrade " + w_name,
+			"desc": "+12% Damage, +8% Attack Speed (to Lv." + str(w.level + 1) + ")",
 			"price": 35 * w.level
 		})
 	
@@ -195,8 +192,8 @@ func _ready() -> void:
 		
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(0, 80)
-		var price_str = "💰 %d Coins" % price if can_afford else "❌ %d Coins (Too Expensive)" % price
-		btn.text = "%s  [%s]\n%s" % [item["title"], price_str, item["desc"]]
+		var price_str = ("💰 " + str(price) + " Coins") if can_afford else ("❌ " + str(price) + " Coins (Too Expensive)")
+		btn.text = item["title"] + "  [" + price_str + "]\n" + item["desc"]
 		btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.disabled = not can_afford
@@ -248,28 +245,28 @@ func _ready() -> void:
 	
 	if is_instance_valid(player):
 		_add_stat_row(stats_list, "❤️ Max HP", str(int(player.max_health)))
-		_add_stat_row(stats_list, "🌿 HP Regen", "%.1f / sec" % player.regen_speed)
+		_add_stat_row(stats_list, "🌿 HP Regen", str(snapped(player.regen_speed, 0.1)) + " / sec")
 		_add_stat_row(stats_list, "🛡️ Shield", str(player.shield))
 		_add_stat_row(stats_list, "⚡ Move Speed", str(int(player.default_speed)))
 		
 		var near_pct = int(player.near_field_damage_modifier * 100.0)
 		var range_pct = int(player.ranged_damage_modifier * 100.0)
-		_add_stat_row(stats_list, "🥊 Near Field Dmg", "%d%%" % near_pct)
-		_add_stat_row(stats_list, "🔭 Ranged Dmg", "%d%%" % range_pct)
+		_add_stat_row(stats_list, "🥊 Near Field Dmg", str(near_pct) + "%")
+		_add_stat_row(stats_list, "🔭 Ranged Dmg", str(range_pct) + "%")
 		
 		var w_title = Label.new()
-		w_title.text = "\n🗡️ WEAPON QUOTAS (%d / 4)" % current_weapons.size()
+		w_title.text = "\n🗡️ WEAPON QUOTAS (" + str(current_weapons.size()) + " / 4)"
 		w_title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 		w_title.add_theme_font_size_override("font_size", 20)
 		w_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
 		stats_list.add_child(w_title)
 		
 		for i in range(4):
-			var slot_str = "Slot %d: [Empty]" % (i + 1)
+			var slot_str = "Slot " + str(i + 1) + ": [Empty]"
 			if i < current_weapons.size():
 				var w = current_weapons[i]
 				var wn = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
-				slot_str = "%s (Lv.%d)" % [wn, w.level]
+				slot_str = wn + " (Lv." + str(w.level) + ")"
 			var sl = Label.new()
 			sl.text = slot_str
 			sl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
