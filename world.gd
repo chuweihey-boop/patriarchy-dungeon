@@ -30,6 +30,7 @@ func _ready() -> void:
 		hud.update_level(player.level)
 		hud.update_coins(player.coins)
 		hud.update_timer(round_time_remaining, current_round)
+		hud.show_wave_warning("ROUND 1 START!")
 		
 	# Instantiate and display starting weapon selection menu
 	var weapon_selection = preload("res://weapon_selection_menu.tscn").instantiate()
@@ -55,7 +56,7 @@ func _process(delta: float) -> void:
 		# Check for last 1 minute wave warning
 		if round_time_remaining <= 60.0 and not wave_warning_shown:
 			wave_warning_shown = true
-			hud.show_wave_warning("MONSTER WAVE IS COMING!")
+			hud.show_wave_warning("A BIG WAVE OF MONSTERS IS COMING!")
 			
 		hud.update_timer(round_time_remaining, current_round)
 		
