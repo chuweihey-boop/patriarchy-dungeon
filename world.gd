@@ -111,13 +111,21 @@ func _spawn_alert_and_enemy(spawn_pos: Vector2, hp: float, dmg: float) -> void:
 
 func _on_player_level_up(new_level: int) -> void:
 	hud.update_level(new_level)
-	
-	# Pause the game tree
 	get_tree().paused = true
 	
-	# Instantiate and display the upgrade menu
-	var menu = UPGRADE_MENU_SCENE.instantiate()
-	add_child(menu)
+	var effect = Sprite2D.new()
+	effect.set_script(preload("res://effect_sprite.gd"))
+	effect.process_mode = PROCESS_MODE_ALWAYS
+	add_child(effect)
+	effect.global_position = player.global_position + Vector2(0, -80)
+	effect.scale = Vector2(2.0, 2.0)
+	effect.z_index = 50
+	effect.setup(preload("res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.png"), "res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.txt", 25.0, false)
+	
+	effect.animation_finished.connect(func():
+		var menu = UPGRADE_MENU_SCENE.instantiate()
+		add_child(menu)
+	)
 
 const STATS_MENU_SCENE = preload("res://stats_menu.tscn")
 var stats_menu_instance = null

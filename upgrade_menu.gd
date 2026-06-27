@@ -15,13 +15,6 @@ func _ready() -> void:
 	# Stop everything else while upgrading
 	process_mode = PROCESS_MODE_ALWAYS
 	
-	title_label.visible = false
-	var effect = Sprite2D.new()
-	effect.set_script(preload("res://effect_sprite.gd"))
-	$Control/Panel.add_child(effect)
-	effect.position = Vector2(200, 25)
-	effect.setup(preload("res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.png"), "res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.txt", 20.0, true)
-	
 	# Select 3 random upgrades from the pool
 	var selected_upgrades = []
 	var pool_copy = upgrade_pool.duplicate()
