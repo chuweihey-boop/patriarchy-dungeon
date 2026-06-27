@@ -228,7 +228,7 @@ func _rebuild_ui() -> void:
 			
 	if offered_items.is_empty():
 		var empty_lbl = Label.new()
-		empty_lbl.text = "All offered items purchased! Refresh for more."
+		empty_lbl.text = "All offered items purchased! Refresh for free!"
 		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty_lbl.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 		empty_lbl.add_theme_font_size_override("font_size", 16)
@@ -239,11 +239,12 @@ func _rebuild_ui() -> void:
 	action_hbox.add_theme_constant_override("separation", 15)
 	left_vbox.add_child(action_hbox)
 	
-	var can_reroll = current_coins >= current_refresh_cost
+	var effective_cost = 0 if offered_items.is_empty() else current_refresh_cost
+	var can_reroll = current_coins >= effective_cost
 	var refresh_btn = Button.new()
 	refresh_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	refresh_btn.custom_minimum_size = Vector2(0, 50)
-	var cost_str = "💰 " + str(current_refresh_cost) + " Coins"
+	var cost_str = ("💰 " + str(effective_cost) + " Coins") if effective_cost > 0 else "FREE!"
 	refresh_btn.text = ("🔄 Refresh (" + cost_str + ")") if can_reroll else ("❌ Refresh (" + cost_str + ")")
 	refresh_btn.disabled = not can_reroll
 	refresh_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
@@ -251,10 +252,11 @@ func _rebuild_ui() -> void:
 	if can_reroll:
 		refresh_btn.add_theme_color_override("font_color", Color(0.7, 0.9, 1.0))
 		refresh_btn.pressed.connect(func():
-			if is_instance_valid(player) and player.coins >= current_refresh_cost:
-				player.coins -= current_refresh_cost
+			if is_instance_valid(player) and player.coins >= effective_cost:
+				player.coins -= effective_cost
 				player.coins_changed.emit(player.coins)
-				current_refresh_cost += 5
+				if effective_cost > 0:
+					current_refresh_cost += 5
 				_generate_shop_items()
 				_rebuild_ui()
 		)
