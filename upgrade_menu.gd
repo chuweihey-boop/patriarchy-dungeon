@@ -7,7 +7,7 @@ var stat_weights = {
 	"damage_pct": 5.5,
 	"near_field_damage_pct": 4.0,
 	"ranged_damage_pct": 4.0,
-	"fire_rate_pct": 10.0,
+	"fire_rate_pct": 5.5,
 	"shield": 30.0
 }
 
