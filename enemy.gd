@@ -19,10 +19,10 @@ func _ready() -> void:
 	add_to_group("enemies")
 	# Find the player in the world scene dynamically
 	player = get_tree().get_first_node_in_group("player")
-	# Only 10% of monsters spawn shit blocks
-	can_spawn_brown_cube = randf() < 0.1
-	# Only 10% of monsters spawn slow zones
-	can_spawn_slow_zone = randf() < 0.1
+	# Only 5% of monsters spawn shit blocks
+	can_spawn_brown_cube = randf() < 0.05
+	# Only 5% of monsters spawn slow zones
+	can_spawn_slow_zone = randf() < 0.05
 
 func _physics_process(delta: float) -> void:
 	# Spawning timers
