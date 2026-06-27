@@ -78,6 +78,17 @@ func _clear_world() -> void:
 			merge_timer = 0.0
 			_check_and_merge_coins()
 
+func _clear_world() -> void:
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(enemy):
+			enemy.queue_free()
+	for child in get_children():
+		if child is EffectSprite:
+			child.queue_free()
+	for node in get_tree().current_scene.get_children():
+		if "SlowZone" in node.name or "BrownCube" in node.name:
+			node.queue_free()
+
 func _on_enemy_spawner_timeout() -> void:
 	if not player or game_won:
 		return
