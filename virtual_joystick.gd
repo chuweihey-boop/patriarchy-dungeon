@@ -9,6 +9,7 @@ var touch_index: int = -1
 var handle_pos: Vector2 = Vector2.ZERO
 var base_pos: Vector2 = Vector2.ZERO
 var is_active: bool = false
+var show_resting_joystick: bool = true
 
 func _ready() -> void:
 	base_pos = Vector2(1120, 560)
@@ -17,6 +18,19 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	var is_mobile = OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
+	if OS.has_feature("web"):
+		var is_coarse = JavaScriptBridge.eval("window.matchMedia('(pointer: coarse)').matches")
+		if is_coarse:
+			is_mobile = true
+		else:
+			var ua = str(JavaScriptBridge.eval("navigator.userAgent"))
+			if "Android" in ua or "iPhone" in ua or "iPad" in ua or "Mobile" in ua:
+				is_mobile = true
+				
+	if not is_mobile and not DisplayServer.is_touchscreen_available():
+		show_resting_joystick = false
 
 func _input(event: InputEvent) -> void:
 	if not visible:
@@ -34,11 +48,12 @@ func _input(event: InputEvent) -> void:
 		is_valid_touch = (touch_index == -1 or event.index == touch_index)
 		if is_press and touch_index == -1: touch_index = event.index
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		is_press = event.pressed
-		is_release = not event.pressed
-		pos = event.position
-		is_valid_touch = (touch_index == -1 or touch_index == 0)
-		if is_press and touch_index == -1: touch_index = 0
+		if show_resting_joystick or DisplayServer.is_touchscreen_available():
+			is_press = event.pressed
+			is_release = not event.pressed
+			pos = event.position
+			is_valid_touch = (touch_index == -1 or touch_index == 0)
+			if is_press and touch_index == -1: touch_index = 0
 		
 	if is_valid_touch:
 		if is_press:
@@ -64,10 +79,8 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _update_input_actions(vec: Vector2) -> void:
-	# Deadzone threshold
 	var deadzone = 0.08
 	
-	# Horizontal
 	if vec.x > deadzone:
 		Input.action_press("ui_right", vec.x)
 		Input.action_release("ui_left")
@@ -78,7 +91,6 @@ func _update_input_actions(vec: Vector2) -> void:
 		Input.action_release("ui_left")
 		Input.action_release("ui_right")
 		
-	# Vertical
 	if vec.y > deadzone:
 		Input.action_press("ui_down", vec.y)
 		Input.action_release("ui_up")
@@ -101,6 +113,8 @@ func _reset_joystick() -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if not show_resting_joystick and not is_active:
+		return
 	draw_circle(base_pos, max_radius, base_color)
 	draw_arc(base_pos, max_radius, 0, TAU, 36, Color(0.7, 0.85, 1.0, 0.6), 3.5)
 	draw_circle(handle_pos, max_radius * 0.42, handle_color)
