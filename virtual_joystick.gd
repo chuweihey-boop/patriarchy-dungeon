@@ -13,6 +13,8 @@ var is_active: bool = false
 func _ready() -> void:
 	base_pos = Vector2(160, 560)
 	handle_pos = base_pos
+	size = Vector2(1280, 720)
+	custom_minimum_size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 

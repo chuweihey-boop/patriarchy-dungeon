@@ -10,7 +10,7 @@ extends CanvasLayer
 func _ready() -> void:
 	# Add mobile virtual joystick
 	var joystick = preload("res://virtual_joystick.gd").new()
-	add_child(joystick)
+	$Control.add_child(joystick)
 	
 	# Initialize display
 	level_label.text = "LEVEL 1"
