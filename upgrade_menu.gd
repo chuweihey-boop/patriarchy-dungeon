@@ -146,15 +146,24 @@ var offered_items: Array = []
 var current_refresh_cost: int = 5
 
 func calculate_price(item: Dictionary) -> int:
+	var base_price = 0.0
 	if "price" in item:
-		return item["price"]
-	var total = 0.0
-	var stats = item.get("stats", {})
-	for stat_name in stats:
-		var val = stats[stat_name]
-		var weight = stat_weights.get(stat_name, 1.0)
-		total += val * weight
-	return max(5, int(round(total)))
+		base_price = float(item["price"])
+	else:
+		var total = 0.0
+		var stats = item.get("stats", {})
+		for stat_name in stats:
+			var val = stats[stat_name]
+			var weight = stat_weights.get(stat_name, 1.0)
+			total += val * weight
+		base_price = max(5.0, total)
+		
+	var player = get_tree().get_first_node_in_group("player")
+	var level_multiplier = 1.0
+	if is_instance_valid(player) and "level" in player:
+		level_multiplier = 1.0 + 0.25 * max(0, player.level - 1)
+		
+	return max(5, int(round(base_price * level_multiplier)))
 
 func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
