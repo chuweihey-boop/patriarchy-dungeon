@@ -11,11 +11,12 @@ var base_pos: Vector2 = Vector2.ZERO
 var is_active: bool = false
 
 func _ready() -> void:
-
+	base_pos = Vector2(160, 560)
+	handle_pos = base_pos
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 		
@@ -89,6 +90,8 @@ func _update_input_actions(vec: Vector2) -> void:
 func _reset_joystick() -> void:
 	touch_index = -1
 	is_active = false
+	base_pos = Vector2(160, 560)
+	handle_pos = base_pos
 	Input.action_release("ui_left")
 	Input.action_release("ui_right")
 	Input.action_release("ui_up")
@@ -96,11 +99,7 @@ func _reset_joystick() -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	if not is_active:
-		return
-	# Draw outer base ring
 	draw_circle(base_pos, max_radius, base_color)
 	draw_arc(base_pos, max_radius, 0, TAU, 36, Color(0.7, 0.85, 1.0, 0.6), 3.5)
-	# Draw inner thumbstick handle
 	draw_circle(handle_pos, max_radius * 0.42, handle_color)
 	draw_arc(handle_pos, max_radius * 0.42, 0, TAU, 28, Color.WHITE, 2.0)
