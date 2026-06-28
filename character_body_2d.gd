@@ -262,7 +262,8 @@ func _die() -> void:
 	vbox.add_child(hbox)
 	
 	var restart_btn = Button.new()
-	restart_btn.text = "🔄 Restart"
+	restart_btn.text = "Restart"
+	restart_btn.icon = preload("res://art/icons/32x32/arrow_01a.png")
 	restart_btn.custom_minimum_size = Vector2(160, 55)
 	restart_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	restart_btn.add_theme_font_size_override("font_size", 20)
@@ -273,7 +274,8 @@ func _die() -> void:
 	hbox.add_child(restart_btn)
 	
 	var exit_btn = Button.new()
-	exit_btn.text = "🚪 Exit"
+	exit_btn.text = "Exit"
+	exit_btn.icon = preload("res://art/icons/32x32/boots_01a.png")
 	exit_btn.custom_minimum_size = Vector2(160, 55)
 	exit_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	exit_btn.add_theme_font_size_override("font_size", 20)

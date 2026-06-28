@@ -9,11 +9,19 @@ var level: int = 1
 
 func get_weapon_name() -> String:
 	match weapon_type:
-		WeaponType.EGGBUSKET: return "🥚 Egg Basket"
-		WeaponType.NEGI: return "葱 Negi"
-		WeaponType.FISHKNIFE: return "🔪 Fish Knife"
-		WeaponType.WOODENSWORD: return "🗡️ Wooden Sword"
+		WeaponType.EGGBUSKET: return "Egg Basket"
+		WeaponType.NEGI: return "Negi"
+		WeaponType.FISHKNIFE: return "Fish Knife"
+		WeaponType.WOODENSWORD: return "Wooden Sword"
 	return "Weapon"
+
+func get_weapon_icon() -> Texture2D:
+	match weapon_type:
+		WeaponType.EGGBUSKET: return preload("res://art/icons/32x32/potion_02a.png")
+		WeaponType.NEGI: return preload("res://art/icons/32x32/leaf_01a.png")
+		WeaponType.FISHKNIFE: return preload("res://art/icons/32x32/fish_01a.png")
+		WeaponType.WOODENSWORD: return preload("res://art/icons/32x32/sword_01a.png")
+	return null
 
 var fire_rate: float = 1.0 # Shots per second
 var shoot_range: float = 600.0

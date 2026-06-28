@@ -14,113 +14,131 @@ var stat_weights = {
 var test_items = [
 	{
 		"id": "iron_fist",
-		"title": "🥊 Iron Knuckles",
+		"title": "Iron Knuckles",
 		"desc": "+12% Near Field Damage",
-		"stats": {"near_field_damage_pct": 12.0}
+		"stats": {"near_field_damage_pct": 12.0},
+		"icon": preload("res://art/icons/32x32/gloves_01a.png")
 	},
 	{
 		"id": "sniper_lens",
-		"title": "🔭 Sniper Scope",
+		"title": "Sniper Scope",
 		"desc": "+12% Ranged Attack Damage",
-		"stats": {"ranged_damage_pct": 12.0}
+		"stats": {"ranged_damage_pct": 12.0},
+		"icon": preload("res://art/icons/32x32/bow_01a.png")
 	},
 	{
 		"id": "master_seal",
-		"title": "☯️ Master Emblem",
+		"title": "Master Emblem",
 		"desc": "+8% Near Field & +8% Ranged Damage",
-		"stats": {"near_field_damage_pct": 8.0, "ranged_damage_pct": 8.0}
+		"stats": {"near_field_damage_pct": 8.0, "ranged_damage_pct": 8.0},
+		"icon": preload("res://art/icons/32x32/gem_01a.png")
 	},
 	{
 		"id": "vitality",
-		"title": "❤️ Vitality Ring",
+		"title": "Vitality Ring",
 		"desc": "+15 Max HP",
-		"stats": {"max_health": 15.0}
+		"stats": {"max_health": 15.0},
+		"icon": preload("res://art/icons/32x32/potion_01a.png")
 	},
 	{
 		"id": "troll_blood",
-		"title": "🌿 Troll Blood",
+		"title": "Troll Blood",
 		"desc": "+1 HP Regen/sec",
-		"stats": {"regen_speed": 1.0}
+		"stats": {"regen_speed": 1.0},
+		"icon": preload("res://art/icons/32x32/leaf_01a.png")
 	},
 	{
 		"id": "hermes",
-		"title": "⚡ Hermes Boots",
+		"title": "Hermes Boots",
 		"desc": "+8% Move Speed",
-		"stats": {"speed_pct": 8.0}
+		"stats": {"speed_pct": 8.0},
+		"icon": preload("res://art/icons/32x32/boots_01a.png")
 	},
 	{
 		"id": "whetstone",
-		"title": "⚔️ Whetstone",
+		"title": "Whetstone",
 		"desc": "+10% Weapon Damage",
-		"stats": {"damage_pct": 10.0}
+		"stats": {"damage_pct": 10.0},
+		"icon": preload("res://art/icons/32x32/sword_01a.png")
 	},
 	{
 		"id": "rapid_string",
-		"title": "🏹 Rapid String",
+		"title": "Rapid String",
 		"desc": "+5% Attack Speed",
-		"stats": {"fire_rate_pct": 5.0}
+		"stats": {"fire_rate_pct": 5.0},
+		"icon": preload("res://art/icons/32x32/arrow_01a.png")
 	},
 	{
 		"id": "ranger_kit",
-		"title": "🪶 Ranger Kit",
+		"title": "Ranger Kit",
 		"desc": "+3% Attack Speed & +5% Damage",
-		"stats": {"fire_rate_pct": 3.0, "damage_pct": 5.0}
+		"stats": {"fire_rate_pct": 3.0, "damage_pct": 5.0},
+		"icon": preload("res://art/icons/32x32/arrow_01b.png")
 	},
 	{
 		"id": "iron_plate",
-		"title": "🛡️ Iron Plating",
+		"title": "Iron Plating",
 		"desc": "+1 Shield, -3% Move Speed",
-		"stats": {"shield": 1.0, "speed_pct": -3.0}
+		"stats": {"shield": 1.0, "speed_pct": -3.0},
+		"icon": preload("res://art/icons/32x32/shield_01a.png")
 	},
 	{
 		"id": "berserk",
-		"title": "🔥 Berserk Charm",
+		"title": "Berserk Charm",
 		"desc": "+18% Damage, -10 Max HP",
-		"stats": {"damage_pct": 18.0, "max_health": -10.0}
+		"stats": {"damage_pct": 18.0, "max_health": -10.0},
+		"icon": preload("res://art/icons/32x32/potion_02a.png")
 	},
 	{
 		"id": "cheetah_energy",
-		"title": "🏃 Cheetah Energy",
+		"title": "Cheetah Energy",
 		"desc": "+15% Move Speed, -6% Weapon Damage",
-		"stats": {"speed_pct": 15.0, "damage_pct": -6.0}
+		"stats": {"speed_pct": 15.0, "damage_pct": -6.0},
+		"icon": preload("res://art/icons/32x32/boots_01b.png")
 	},
 	{
 		"id": "leech_seed",
-		"title": "🩸 Leech Seed",
+		"title": "Leech Seed",
 		"desc": "+1.5 HP Regen/sec, -15 Max HP",
-		"stats": {"regen_speed": 1.5, "max_health": -15.0}
+		"stats": {"regen_speed": 1.5, "max_health": -15.0},
+		"icon": preload("res://art/icons/32x32/potion_03a.png")
 	},
 	{
 		"id": "espresso_shot",
-		"title": "☕ Espresso Shot",
+		"title": "Espresso Shot",
 		"desc": "+12% Attack Speed, -5% Move Speed",
-		"stats": {"fire_rate_pct": 12.0, "speed_pct": -5.0}
+		"stats": {"fire_rate_pct": 12.0, "speed_pct": -5.0},
+		"icon": preload("res://art/icons/32x32/potion_01b.png")
 	},
 	{
 		"id": "heavy_dumbbell",
-		"title": "🏋️ Heavy Dumbbell",
+		"title": "Heavy Dumbbell",
 		"desc": "+20 Max HP, -4% Move Speed",
-		"stats": {"max_health": 20.0, "speed_pct": -4.0}
+		"stats": {"max_health": 20.0, "speed_pct": -4.0},
+		"icon": preload("res://art/icons/32x32/shield_02a.png")
 	},
 	{
 		"id": "glass_cannon",
-		"title": "🎯 Glass Cannon",
+		"title": "Glass Cannon",
 		"desc": "+25% Ranged Attack Damage, -1 Shield",
-		"stats": {"ranged_damage_pct": 25.0, "shield": -1.0}
+		"stats": {"ranged_damage_pct": 25.0, "shield": -1.0},
+		"icon": preload("res://art/icons/32x32/bow_02a.png")
 	},
 	{
 		"id": "oni_mask",
-		"title": "👹 Oni Mask",
+		"title": "Oni Mask",
 		"desc": "+25% Near Field Damage, -0.8 HP Regen/sec",
-		"stats": {"near_field_damage_pct": 25.0, "regen_speed": -0.8}
+		"stats": {"near_field_damage_pct": 25.0, "regen_speed": -0.8},
+		"icon": preload("res://art/icons/32x32/sword_02a.png")
 	},
 	{
 		"id": "vacuum_cleaner",
-		"title": "🧲 Vacuum Magnet",
+		"title": "Vacuum Magnet",
 		"desc": "Absorb all leftover coins & hearts when round ends",
 		"price": 80,
 		"action_type": "special",
-		"special_action": "absorb_round_end"
+		"special_action": "absorb_round_end",
+		"icon": preload("res://art/icons/32x32/gem_01b.png")
 	}
 ]
 
@@ -158,27 +176,36 @@ func _generate_shop_items() -> void:
 		var owned_types = []
 		for w in current_weapons:
 			owned_types.append(w.weapon_type)
-		var names = ["🥚 Egg Basket", "葱 Negi", "🔪 Fish Knife", "🗡️ Wooden Sword"]
+		var names = ["Egg Basket", "Negi", "Fish Knife", "Wooden Sword"]
+		var weapon_icons = [
+			preload("res://art/icons/32x32/potion_02a.png"),
+			preload("res://art/icons/32x32/leaf_01a.png"),
+			preload("res://art/icons/32x32/fish_01a.png"),
+			preload("res://art/icons/32x32/sword_01a.png")
+		]
 		for tid in [0, 1, 2, 3]:
 			if not tid in owned_types:
 				pool.append({
 					"id": "add_w_" + str(tid),
 					"action_type": "add_weapon",
 					"weapon_type": tid,
-					"title": "➕ Equip " + names[tid],
+					"title": "Equip " + names[tid],
 					"desc": "Add new weapon (Slot " + str(current_weapons.size() + 1) + "/4)",
-					"price": 50
+					"price": 50,
+					"icon": weapon_icons[tid]
 				})
 				
 	for w in current_weapons:
 		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
+		var w_icon = w.get_weapon_icon() if w.has_method("get_weapon_icon") else preload("res://art/icons/32x32/arrow_01a.png")
 		pool.append({
 			"id": "up_w_" + str(w.get_instance_id()),
 			"action_type": "upgrade_weapon",
 			"target_weapon": w,
-			"title": "⬆️ Upgrade " + w_name,
+			"title": "Upgrade " + w_name,
 			"desc": "+8% Damage, +4% Attack Speed (to Lv." + str(w.level + 1) + ")",
-			"price": 45 * w.level
+			"price": 45 * w.level,
+			"icon": w_icon
 		})
 	
 	pool.shuffle()
@@ -227,8 +254,13 @@ func _rebuild_ui() -> void:
 	var header_hbox = HBoxContainer.new()
 	left_vbox.add_child(header_hbox)
 	
+	var title_icon = TextureRect.new()
+	title_icon.texture = preload("res://art/icons/32x32/gem_01a.png")
+	title_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	header_hbox.add_child(title_icon)
+	
 	var title = Label.new()
-	title.text = "🛒 LEVEL UP SHOP"
+	title.text = "LEVEL UP SHOP"
 	title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	title.add_theme_font_size_override("font_size", 24)
 	title.add_theme_color_override("font_color", Color(0.9, 0.9, 1.0))
@@ -238,8 +270,13 @@ func _rebuild_ui() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header_hbox.add_child(spacer)
 	
+	var coins_icon = TextureRect.new()
+	coins_icon.texture = preload("res://art/icons/32x32/coin_01a.png")
+	coins_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	header_hbox.add_child(coins_icon)
+	
 	var coins_label = Label.new()
-	coins_label.text = "💰 Coins: " + str(current_coins)
+	coins_label.text = "Coins: " + str(current_coins)
 	coins_label.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	coins_label.add_theme_font_size_override("font_size", 22)
 	coins_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
@@ -257,7 +294,9 @@ func _rebuild_ui() -> void:
 		
 		var btn = Button.new()
 		btn.custom_minimum_size = Vector2(0, 80)
-		var price_str = ("💰 " + str(price) + " Coins") if can_afford else ("❌ " + str(price) + " Coins (Too Expensive)")
+		if item.get("icon"):
+			btn.icon = item["icon"]
+		var price_str = (str(price) + " Coins") if can_afford else (str(price) + " Coins (Too Expensive)")
 		btn.text = item["title"] + "  [" + price_str + "]\n" + item["desc"]
 		btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 		btn.add_theme_font_size_override("font_size", 16)
@@ -291,8 +330,9 @@ func _rebuild_ui() -> void:
 	var refresh_btn = Button.new()
 	refresh_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	refresh_btn.custom_minimum_size = Vector2(0, 50)
-	var cost_str = ("💰 " + str(effective_cost) + " Coins") if effective_cost > 0 else "FREE!"
-	refresh_btn.text = ("🔄 Refresh (" + cost_str + ")") if can_reroll else ("❌ Refresh (" + cost_str + ")")
+	var cost_str = (str(effective_cost) + " Coins") if effective_cost > 0 else "FREE!"
+	refresh_btn.text = ("Refresh (" + cost_str + ")") if can_reroll else ("Refresh (" + cost_str + ")")
+	refresh_btn.icon = preload("res://art/icons/32x32/arrow_01a.png")
 	refresh_btn.disabled = not can_reroll
 	refresh_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	refresh_btn.add_theme_font_size_override("font_size", 16)
@@ -312,7 +352,8 @@ func _rebuild_ui() -> void:
 	var done_btn = Button.new()
 	done_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	done_btn.custom_minimum_size = Vector2(0, 50)
-	done_btn.text = "✅ Done / Continue Game"
+	done_btn.text = "Done / Continue Game"
+	done_btn.icon = preload("res://art/icons/32x32/shield_01a.png")
 	done_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	done_btn.add_theme_font_size_override("font_size", 16)
 	done_btn.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
@@ -330,36 +371,48 @@ func _rebuild_ui() -> void:
 	right_vbox.add_theme_constant_override("separation", 15)
 	right_panel.add_child(right_vbox)
 	
+	var stat_header = HBoxContainer.new()
+	right_vbox.add_child(stat_header)
+	var stat_icon = TextureRect.new()
+	stat_icon.texture = preload("res://art/icons/32x32/book_01a.png")
+	stat_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	stat_header.add_child(stat_icon)
 	var stat_title = Label.new()
-	stat_title.text = "📊 CHARACTER & BUILD"
+	stat_title.text = "CHARACTER & BUILD"
 	stat_title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 	stat_title.add_theme_font_size_override("font_size", 24)
 	stat_title.add_theme_color_override("font_color", Color(1.0, 0.9, 0.95))
-	right_vbox.add_child(stat_title)
+	stat_header.add_child(stat_title)
 	
 	var stats_list = VBoxContainer.new()
 	stats_list.add_theme_constant_override("separation", 8)
 	right_vbox.add_child(stats_list)
 	
 	if is_instance_valid(player):
-		_add_stat_row(stats_list, "❤️ Max HP", str(int(player.max_health)))
-		_add_stat_row(stats_list, "🌿 HP Regen", str(snapped(player.regen_speed, 0.1)) + " / sec")
-		_add_stat_row(stats_list, "🛡️ Shield", str(player.shield))
-		_add_stat_row(stats_list, "⚡ Move Speed", str(int(player.default_speed)))
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/potion_01a.png"), "Max HP", str(int(player.max_health)))
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/leaf_01a.png"), "HP Regen", str(snapped(player.regen_speed, 0.1)) + " / sec")
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/shield_01a.png"), "Shield", str(player.shield))
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/boots_01a.png"), "Move Speed", str(int(player.default_speed)))
 		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
-			_add_stat_row(stats_list, "🧲 Vacuum Magnet", "ACTIVE")
+			_add_stat_row(stats_list, preload("res://art/icons/32x32/gem_01b.png"), "Vacuum Magnet", "ACTIVE")
 		
 		var near_pct = int(player.near_field_damage_modifier * 100.0)
 		var range_pct = int(player.ranged_damage_modifier * 100.0)
-		_add_stat_row(stats_list, "🥊 Near Field Dmg", str(near_pct) + "%")
-		_add_stat_row(stats_list, "🔭 Ranged Dmg", str(range_pct) + "%")
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/gloves_01a.png"), "Near Field Dmg", str(near_pct) + "%")
+		_add_stat_row(stats_list, preload("res://art/icons/32x32/bow_01a.png"), "Ranged Dmg", str(range_pct) + "%")
 		
+		var w_header = HBoxContainer.new()
+		stats_list.add_child(w_header)
+		var w_icon = TextureRect.new()
+		w_icon.texture = preload("res://art/icons/32x32/sword_01a.png")
+		w_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		w_header.add_child(w_icon)
 		var w_title = Label.new()
-		w_title.text = "\n🗡️ WEAPON QUOTAS (" + str(current_weapons.size()) + " / 4)"
+		w_title.text = "WEAPON QUOTAS (" + str(current_weapons.size()) + " / 4)"
 		w_title.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 		w_title.add_theme_font_size_override("font_size", 20)
 		w_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-		stats_list.add_child(w_title)
+		w_header.add_child(w_title)
 		
 		for i in range(4):
 			var slot_row = HBoxContainer.new()
@@ -369,6 +422,12 @@ func _rebuild_ui() -> void:
 				var w = current_weapons[i]
 				var wn = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
 				var resell_price = int(25 * w.level)
+				
+				if w.has_method("get_weapon_icon") and w.get_weapon_icon():
+					var w_icon_rect = TextureRect.new()
+					w_icon_rect.texture = w.get_weapon_icon()
+					w_icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+					slot_row.add_child(w_icon_rect)
 				
 				var wl = Label.new()
 				wl.text = wn + " (Lv." + str(w.level) + ")"
@@ -382,7 +441,8 @@ func _rebuild_ui() -> void:
 				slot_row.add_child(sp2)
 				
 				var sell_btn = Button.new()
-				sell_btn.text = "💰 Sell (+" + str(resell_price) + ")"
+				sell_btn.icon = preload("res://art/icons/32x32/coin_01a.png")
+				sell_btn.text = "Sell (+" + str(resell_price) + ")"
 				sell_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
 				sell_btn.add_theme_font_size_override("font_size", 14)
 				sell_btn.add_theme_color_override("font_color", Color(1.0, 0.7, 0.3))
@@ -396,8 +456,13 @@ func _rebuild_ui() -> void:
 				el.add_theme_color_override("font_color", Color(0.5, 0.5, 0.6))
 				slot_row.add_child(el)
 
-func _add_stat_row(container: VBoxContainer, label_text: String, val_text: String) -> void:
+func _add_stat_row(container: VBoxContainer, icon_tex: Texture2D, label_text: String, val_text: String) -> void:
 	var row = HBoxContainer.new()
+	if icon_tex:
+		var icon_rect = TextureRect.new()
+		icon_rect.texture = icon_tex
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		row.add_child(icon_rect)
 	var l = Label.new()
 	l.text = label_text
 	l.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
