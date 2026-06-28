@@ -11,7 +11,7 @@ var base_pos: Vector2 = Vector2.ZERO
 var is_active: bool = false
 
 func _ready() -> void:
-	base_pos = Vector2(160, 560)
+	base_pos = Vector2(1120, 560)
 	handle_pos = base_pos
 	size = Vector2(1280, 720)
 	custom_minimum_size = Vector2(1280, 720)
@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
 		
 	if is_valid_touch:
 		if is_press:
-			if pos.x < get_viewport_rect().size.x * 0.65:
+			if pos.x > get_viewport_rect().size.x * 0.35:
 				base_pos = pos
 				handle_pos = base_pos
 				is_active = true
@@ -92,7 +92,7 @@ func _update_input_actions(vec: Vector2) -> void:
 func _reset_joystick() -> void:
 	touch_index = -1
 	is_active = false
-	base_pos = Vector2(160, 560)
+	base_pos = Vector2(1120, 560)
 	handle_pos = base_pos
 	Input.action_release("ui_left")
 	Input.action_release("ui_right")
