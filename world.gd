@@ -45,6 +45,7 @@ func _process(delta: float) -> void:
 			if current_round > 5:
 				game_won = true
 				round_time_remaining = 0.0
+				_clear_world()
 				hud.update_timer(0.0, 5)
 				hud.show_wave_warning("VICTORY! ALL 5 ROUNDS SURVIVED!")
 				$EnemySpawner.stop()
@@ -69,22 +70,40 @@ func _process(delta: float) -> void:
 			_check_and_merge_coins()
 
 func _absorb_all_pickups() -> void:
-	if not is_instance_valid(player) or not "absorb_pickups_on_round_end" in player or not player.absorb_pickups_on_round_end:
+	if not is_instance_valid(player):
 		return
-	for gem in get_tree().get_nodes_in_group("experience_gems"):
-		if is_instance_valid(gem) and not gem.is_queued_for_deletion():
-			player.gain_xp(gem.xp_value)
-			gem.queue_free()
-	for heart in get_tree().get_nodes_in_group("heart_pickups"):
-		if is_instance_valid(heart) and not heart.is_queued_for_deletion():
-			if player.has_method("heal"):
-				player.heal(heart.heal_amount)
-			heart.queue_free()
+	if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
+		for gem in get_tree().get_nodes_in_group("experience_gems"):
+			if is_instance_valid(gem) and not gem.is_queued_for_deletion():
+				player.gain_xp(gem.xp_value)
+				gem.queue_free()
+		for heart in get_tree().get_nodes_in_group("heart_pickups"):
+			if is_instance_valid(heart) and not heart.is_queued_for_deletion():
+				if player.has_method("heal"):
+					player.heal(heart.heal_amount)
+				heart.queue_free()
+	else:
+		if "coin_recycle_pct" in player and player.coin_recycle_pct > 0.0:
+			var leftover_coins = 0
+			for gem in get_tree().get_nodes_in_group("experience_gems"):
+				if is_instance_valid(gem) and not gem.is_queued_for_deletion():
+					leftover_coins += gem.xp_value
+			if leftover_coins > 0:
+				var recycled = int(round(leftover_coins * (player.coin_recycle_pct / 100.0)))
+				if recycled > 0:
+					player.coins += recycled
+					player.coins_changed.emit(player.coins)
 
 func _clear_world() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		if is_instance_valid(enemy):
 			enemy.queue_free()
+	for gem in get_tree().get_nodes_in_group("experience_gems"):
+		if is_instance_valid(gem):
+			gem.queue_free()
+	for heart in get_tree().get_nodes_in_group("heart_pickups"):
+		if is_instance_valid(heart):
+			heart.queue_free()
 	for child in get_children():
 		if child is EffectSprite:
 			child.queue_free()

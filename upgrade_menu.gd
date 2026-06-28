@@ -139,6 +139,15 @@ var test_items = [
 		"action_type": "special",
 		"special_action": "absorb_round_end",
 		"icon": preload("res://art/icons/32x32/gem_01b.png")
+	},
+	{
+		"id": "coin_recycler",
+		"title": "Coin Recycler",
+		"desc": "Recycle 20% of leftover coins on ground when round ends (Max 100%)",
+		"price": 45,
+		"action_type": "special",
+		"special_action": "add_coin_recycle",
+		"icon": preload("res://art/icons/32x32/coin_01a.png")
 	}
 ]
 
@@ -178,8 +187,11 @@ func _generate_shop_items() -> void:
 	var current_weapons = player.get_weapons() if is_instance_valid(player) and player.has_method("get_weapons") else []
 	
 	var pool = test_items.duplicate()
-	if is_instance_valid(player) and "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
-		pool = pool.filter(func(item): return item.get("id") != "vacuum_cleaner")
+	if is_instance_valid(player):
+		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
+			pool = pool.filter(func(item): return item.get("id") != "vacuum_cleaner")
+		if "coin_recycle_pct" in player and player.coin_recycle_pct >= 100.0:
+			pool = pool.filter(func(item): return item.get("id") != "coin_recycler")
 		
 	if current_weapons.size() < 4:
 		var owned_types = []
@@ -534,6 +546,8 @@ func _buy_item(item: Dictionary, price: int) -> void:
 	elif action == "special":
 		if item.get("special_action") == "absorb_round_end":
 			player.absorb_pickups_on_round_end = true
+		elif item.get("special_action") == "add_coin_recycle":
+			player.coin_recycle_pct = min(100.0, player.coin_recycle_pct + 20.0)
 	else:
 		var stats = item.get("stats", {})
 		for stat_name in stats:

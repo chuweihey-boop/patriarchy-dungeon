@@ -26,6 +26,7 @@ var ranged_damage_modifier: float = 1.0
 var regen_speed: float = 0.0
 var shield: int = 0
 var absorb_pickups_on_round_end: bool = false
+var coin_recycle_pct: float = 0.0
 var current_dir: String = "down"
 var slow_zones_overlapping: int = 0
 
