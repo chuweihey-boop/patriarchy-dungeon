@@ -11,19 +11,7 @@ var base_pos: Vector2 = Vector2.ZERO
 var is_active: bool = false
 
 func _ready() -> void:
-	var is_mobile = OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
-	if OS.has_feature("web"):
-		var is_touch_pointer = JavaScriptBridge.eval("window.matchMedia('(pointer: coarse)').matches")
-		if is_touch_pointer:
-			is_mobile = true
-		else:
-			var ua = str(JavaScriptBridge.eval("navigator.userAgent"))
-			if "Android" in ua or "iPhone" in ua or "iPad" in ua or "Mobile" in ua:
-				is_mobile = true
-				
-	if not is_mobile and not DisplayServer.is_touchscreen_available():
-		visible = false
-		
+
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
