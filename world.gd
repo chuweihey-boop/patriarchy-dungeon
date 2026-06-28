@@ -11,9 +11,8 @@ const ROUND_DURATION: float = 180.0 # 3 minutes per round
 var round_time_remaining: float = ROUND_DURATION
 var wave_warning_shown: bool = false
 var game_won: bool = false
-
-var merge_timer: float = 0.0
-const MERGE_INTERVAL: float = 1.0
+var is_transitioning_round: bool = false
+var round_transition_timer: float = 0.0
 
 func _ready() -> void:
 	$EnemySpawner.wait_time = 1.0
@@ -38,23 +37,31 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not get_tree().paused and not game_won:
+		if is_transitioning_round:
+			round_transition_timer += delta
+			if round_transition_timer >= 3.0:
+				is_transitioning_round = false
+				current_round += 1
+				if current_round > 5:
+					game_won = true
+					round_time_remaining = 0.0
+					_clear_world()
+					hud.update_timer(0.0, 5)
+					hud.show_wave_warning("VICTORY! ALL 5 ROUNDS SURVIVED!")
+					$EnemySpawner.stop()
+					return
+				else:
+					_clear_world()
+					round_time_remaining = ROUND_DURATION
+					wave_warning_shown = false
+					hud.show_wave_warning("ROUND %d START!" % current_round)
+					$EnemySpawner.start()
+			return
+
 		round_time_remaining -= delta
 		if round_time_remaining <= 0.0:
-			_absorb_all_pickups()
-			current_round += 1
-			if current_round > 5:
-				game_won = true
-				round_time_remaining = 0.0
-				_clear_world()
-				hud.update_timer(0.0, 5)
-				hud.show_wave_warning("VICTORY! ALL 5 ROUNDS SURVIVED!")
-				$EnemySpawner.stop()
-				return
-			else:
-				_clear_world()
-				round_time_remaining = ROUND_DURATION
-				wave_warning_shown = false
-				hud.show_wave_warning("ROUND %d START!" % current_round)
+			_start_round_transition()
+			return
 				
 		# Check for last 1 minute wave warning
 		if round_time_remaining <= 60.0 and not wave_warning_shown:
@@ -62,37 +69,46 @@ func _process(delta: float) -> void:
 			hud.show_wave_warning("A BIG WAVE OF MONSTERS IS COMING!")
 			
 		hud.update_timer(round_time_remaining, current_round)
-		
-		# Merge coins check
-		merge_timer += delta
-		if merge_timer >= MERGE_INTERVAL:
-			merge_timer = 0.0
-			_check_and_merge_coins()
 
-func _absorb_all_pickups() -> void:
-	if not is_instance_valid(player):
-		return
-	if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
-		for gem in get_tree().get_nodes_in_group("experience_gems"):
-			if is_instance_valid(gem) and not gem.is_queued_for_deletion():
-				player.gain_xp(gem.xp_value)
-				gem.queue_free()
-		for heart in get_tree().get_nodes_in_group("heart_pickups"):
-			if is_instance_valid(heart) and not heart.is_queued_for_deletion():
-				if player.has_method("heal"):
-					player.heal(heart.heal_amount)
-				heart.queue_free()
-	else:
-		if "coin_recycle_pct" in player and player.coin_recycle_pct > 0.0:
-			var leftover_coins = 0
+func _start_round_transition() -> void:
+	is_transitioning_round = true
+	round_transition_timer = 0.0
+	$EnemySpawner.stop()
+	
+	var coins_collected = 0
+	if is_instance_valid(player):
+		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
 			for gem in get_tree().get_nodes_in_group("experience_gems"):
 				if is_instance_valid(gem) and not gem.is_queued_for_deletion():
-					leftover_coins += gem.xp_value
-			if leftover_coins > 0:
-				var recycled = int(round(leftover_coins * (player.coin_recycle_pct / 100.0)))
-				if recycled > 0:
-					player.coins += recycled
-					player.coins_changed.emit(player.coins)
+					coins_collected += gem.xp_value
+					if "is_being_collected" in gem:
+						gem.is_being_collected = true
+					if "magnet_speed" in gem:
+						gem.magnet_speed = 850.0
+			for heart in get_tree().get_nodes_in_group("heart_pickups"):
+				if is_instance_valid(heart) and not heart.is_queued_for_deletion():
+					if player.has_method("heal"):
+						player.heal(heart.heal_amount)
+					heart.queue_free()
+		else:
+			if "coin_recycle_pct" in player and player.coin_recycle_pct > 0.0:
+				var leftover_coins = 0
+				var all_gems = get_tree().get_nodes_in_group("experience_gems")
+				for gem in all_gems:
+					if is_instance_valid(gem) and not gem.is_queued_for_deletion():
+						leftover_coins += gem.xp_value
+				if leftover_coins > 0:
+					var recycled = int(round(leftover_coins * (player.coin_recycle_pct / 100.0)))
+					if recycled > 0:
+						coins_collected = recycled
+						player.coins += recycled
+						player.coins_changed.emit(player.coins)
+						for gem in all_gems:
+							if is_instance_valid(gem) and "is_being_collected" in gem:
+								gem.is_being_collected = true
+								gem.magnet_speed = 750.0
+								
+	hud.show_wave_warning("%d COINS COLLECTED!" % coins_collected)
 
 func _clear_world() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -186,72 +202,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				add_child(stats_menu_instance)
 
 
-func _check_and_merge_coins() -> void:
-	var all_gems = get_tree().get_nodes_in_group("experience_gems")
-	var small_gems = []
-	for gem in all_gems:
-		if is_instance_valid(gem) and gem.xp_value == 1 and not gem.is_being_collected:
-			small_gems.append(gem)
-			
-	# If small coins count is <= 15, we don't merge them.
-	if small_gems.size() <= 15:
-		return
-		
-	var merged_this_tick = false
-	var deleted_gems = {}
-	
-	for i in range(small_gems.size()):
-		var base_gem = small_gems[i]
-		if base_gem in deleted_gems or not is_instance_valid(base_gem):
-			continue
-			
-		# Find distances to other valid small gems
-		var neighbors = []
-		for j in range(small_gems.size()):
-			if i == j:
-				continue
-			var other_gem = small_gems[j]
-			if other_gem in deleted_gems or not is_instance_valid(other_gem):
-				continue
-			var dist = base_gem.global_position.distance_to(other_gem.global_position)
-			neighbors.append({"gem": other_gem, "dist": dist})
-			
-		# Sort by distance ascending
-		neighbors.sort_custom(func(a, b): return a.dist < b.dist)
-		
-		# If we have at least 4 valid neighbors, check the 4th closest neighbor
-		if neighbors.size() >= 4:
-			var furthest_neighbor_dist = neighbors[3].dist
-			if furthest_neighbor_dist < 300.0:
-				var group = [base_gem]
-				for k in range(4):
-					group.append(neighbors[k].gem)
-					
-				# Calculate average position
-				var avg_pos = Vector2.ZERO
-				for g in group:
-					avg_pos += g.global_position
-				avg_pos /= 5.0
-				
-				# Spawn big coin
-				_spawn_big_coin(avg_pos)
-				
-				# Mark all as deleted and free them
-				for g in group:
-					deleted_gems[g] = true
-					g.queue_free()
-					
-				merged_this_tick = true
-				
-	if merged_this_tick:
-		print("Merged groups of 5 small coins into big coins.")
 
-
-func _spawn_big_coin(pos: Vector2) -> void:
-	var gem_scene = preload("res://experience_gem.tscn")
-	var big_gem = gem_scene.instantiate()
-	big_gem.xp_value = 5
-	big_gem.global_position = pos
-	add_child(big_gem)
 
 
