@@ -19,21 +19,39 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 		
+	var is_press = false
+	var is_release = false
+	var pos = Vector2.ZERO
+	var is_valid_touch = false
+	
 	if event is InputEventScreenTouch:
-		if event.pressed and touch_index == -1:
-			# Touch down anywhere on the left 65% of the screen
-			if event.position.x < get_viewport_rect().size.x * 0.65:
-				touch_index = event.index
-				base_pos = event.position
+		is_press = event.pressed
+		is_release = not event.pressed
+		pos = event.position
+		is_valid_touch = (touch_index == -1 or event.index == touch_index)
+		if is_press and touch_index == -1: touch_index = event.index
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		is_press = event.pressed
+		is_release = not event.pressed
+		pos = event.position
+		is_valid_touch = (touch_index == -1 or touch_index == 0)
+		if is_press and touch_index == -1: touch_index = 0
+		
+	if is_valid_touch:
+		if is_press:
+			if pos.x < get_viewport_rect().size.x * 0.65:
+				base_pos = pos
 				handle_pos = base_pos
 				is_active = true
 				queue_redraw()
 				get_viewport().set_input_as_handled()
-		elif not event.pressed and event.index == touch_index:
+		elif is_release:
 			_reset_joystick()
 			get_viewport().set_input_as_handled()
 			
-	elif event is InputEventScreenDrag and event.index == touch_index:
+	var is_drag = (event is InputEventScreenDrag and event.index == touch_index)
+	var is_mouse_drag = (event is InputEventMouseMotion and touch_index == 0 and (event.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0)
+	if is_drag or is_mouse_drag:
 		var diff = event.position - base_pos
 		if diff.length() > max_radius:
 			diff = diff.normalized() * max_radius
