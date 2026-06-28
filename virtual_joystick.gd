@@ -11,12 +11,13 @@ var base_pos: Vector2 = Vector2.ZERO
 var is_active: bool = false
 
 func _ready() -> void:
-	# Detect if running on mobile OS or mobile web browser
-	var is_touch = DisplayServer.is_touchscreen_available()
-	var is_mobile = OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios")
-	
-	# Automatically hide on desktop PCs
-	if not (is_touch or is_mobile):
+	var is_mobile = OS.has_feature("mobile")
+	if OS.has_feature("web") and ClassDB.class_exists("JavaScriptBridge"):
+		var is_web_mobile = JavaScriptBridge.eval("(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) || (navigator.maxTouchPoints > 0)")
+		if is_web_mobile:
+			is_mobile = true
+			
+	if not is_mobile and not DisplayServer.is_touchscreen_available():
 		visible = false
 		
 	set_anchors_preset(Control.PRESET_FULL_RECT)
