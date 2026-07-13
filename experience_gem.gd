@@ -17,11 +17,8 @@ func _ready() -> void:
 	# Connect overlap signal
 	body_entered.connect(_on_body_entered)
 	
-	# Update animation based on value
-	if xp_value >= 5:
-		sprite.play("big")
-	else:
-		sprite.play("small")
+	# Update animation to always show big coin
+	sprite.play("big")
 
 func _physics_process(delta: float) -> void:
 	if not player:
