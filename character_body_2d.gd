@@ -46,7 +46,9 @@ func _ready() -> void:
 	experience_changed.emit(experience, experience_required)
 	reposition_weapons()
 	
-	if OS.has_feature("mobile") or OS.get_name() in ["Android", "iOS"]:
+	var is_mobile = OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios") or DisplayServer.is_touchscreen_available()
+	
+	if is_mobile:
 		if has_node("Camera2D"):
 			$Camera2D.zoom = Vector2(2.75, 2.75)
 
