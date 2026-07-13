@@ -50,7 +50,7 @@ func _ready() -> void:
 	
 	if is_mobile:
 		if has_node("Camera2D"):
-			$Camera2D.zoom = Vector2(2.75, 2.75)
+			$Camera2D.zoom = Vector2(1.75, 1.75)
 
 func get_weapons() -> Array:
 	var list = []
