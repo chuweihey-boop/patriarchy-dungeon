@@ -48,7 +48,7 @@ func _ready() -> void:
 	
 	if OS.has_feature("mobile") or OS.get_name() in ["Android", "iOS"]:
 		if has_node("Camera2D"):
-			$Camera2D.zoom = Vector2(1.75, 1.75)
+			$Camera2D.zoom = Vector2(2.75, 2.75)
 
 func get_weapons() -> Array:
 	var list = []
