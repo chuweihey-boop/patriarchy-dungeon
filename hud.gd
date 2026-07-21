@@ -1,8 +1,6 @@
 extends CanvasLayer
 
 @onready var health_bar: ProgressBar = $Control/HealthBar
-@onready var xp_bar: ProgressBar = $Control/XPBar
-@onready var level_label: Label = $Control/LevelLabel
 @onready var timer_label: Label = $Control/TimerLabel
 @onready var coin_label: Label = $Control/CoinContainer/Label
 @onready var wave_warning_label: Label = $Control/WaveWarningLabel
@@ -13,7 +11,6 @@ func _ready() -> void:
 	$Control.add_child(joystick)
 	
 	# Initialize display
-	level_label.text = "LEVEL 1"
 	timer_label.text = "ROUND 1/5   03:00"
 	coin_label.text = "0"
 
@@ -22,12 +19,6 @@ func update_health(current: float, max_health: float) -> void:
 	health_bar.value = current
 	health_bar.get_node("Label").text = "%d/%d" % [int(current), int(max_health)]
 
-func update_xp(current: int, required: int) -> void:
-	xp_bar.max_value = required
-	xp_bar.value = current
-
-func update_level(level: int) -> void:
-	level_label.text = "LEVEL %d" % level
 
 func update_timer(time_remaining: float, current_round: int = 1) -> void:
 	var minutes = int(time_remaining) / 60

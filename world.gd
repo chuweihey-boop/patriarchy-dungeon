@@ -19,14 +19,10 @@ func _ready() -> void:
 	if player:
 		# Connect player signals to HUD
 		player.health_changed.connect(hud.update_health)
-		player.experience_changed.connect(hud.update_xp)
-		player.level_up.connect(_on_player_level_up)
 		player.coins_changed.connect(hud.update_coins)
 		
 		# Set initial HUD state
 		hud.update_health(player.health, player.max_health)
-		hud.update_xp(player.experience, player.experience_required)
-		hud.update_level(player.level)
 		hud.update_coins(player.coins)
 		hud.update_timer(round_time_remaining, current_round)
 		hud.show_wave_warning("ROUND 1 START!")
@@ -175,8 +171,7 @@ func _spawn_alert_and_enemy(spawn_pos: Vector2, hp: float, dmg: float) -> void:
 		add_child(new_enemy)
 	)
 
-func _on_player_level_up(new_level: int) -> void:
-	hud.update_level(new_level)
+
 
 const STATS_MENU_SCENE = preload("res://stats_menu.tscn")
 var stats_menu_instance = null

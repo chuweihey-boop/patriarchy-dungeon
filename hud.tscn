@@ -116,16 +116,6 @@ text = "100/100"
 label_settings = SubResource("LabelSettings_bar_text")
 vertical_alignment = 1
 
-[node name="XPBar" type="ProgressBar" parent="Control"]
-layout_mode = 1
-offset_left = 20.0
-offset_top = 52.0
-offset_right = 220.0
-offset_bottom = 76.0
-theme_override_styles/background = SubResource("StyleBoxFlat_xp_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_xp_fg")
-show_percentage = false
-
 [node name="TimerLabel" type="Label" parent="Control"]
 layout_mode = 1
 anchors_preset = 5
@@ -139,20 +129,6 @@ grow_horizontal = 2
 text = "ROUND 1/5   03:00"
 label_settings = SubResource("LabelSettings_timer")
 horizontal_alignment = 1
-
-[node name="LevelLabel" type="Label" parent="Control"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_top = 35.0
-offset_right = -20.0
-offset_bottom = 75.0
-grow_horizontal = 0
-text = "LEVEL 1"
-label_settings = SubResource("LabelSettings_level")
-horizontal_alignment = 2
 
 [node name="CoinContainer" type="HBoxContainer" parent="Control"]
 layout_mode = 1
