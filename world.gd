@@ -109,6 +109,11 @@ func _start_round_transition() -> void:
 								gem.magnet_speed = 750.0
 								
 	hud.show_wave_warning("%d COINS COLLECTED!" % coins_collected)
+	
+	# Show shop between rounds
+	get_tree().paused = true
+	var menu = UPGRADE_MENU_SCENE.instantiate()
+	add_child(menu)
 
 func _clear_world() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -131,14 +136,14 @@ func _on_enemy_spawner_timeout() -> void:
 	if not player or game_won:
 		return
 		
-	# Gentle in Round 1 (2 monsters), scaling rapidly in later rounds
-	var spawn_count = 2 + (current_round - 1) * 3
+	# Gentle in Round 1 (1 monster), scaling slowly in later rounds
+	var spawn_count = 1 + (current_round - 1) * 1
 	var is_wave = round_time_remaining <= 60.0
 	if is_wave:
-		spawn_count *= 2
-		$EnemySpawner.wait_time = max(0.12, (1.0 - (current_round - 1) * 0.18) * 0.5)
+		spawn_count = int(spawn_count * 1.5)
+		$EnemySpawner.wait_time = max(0.4, (1.2 - (current_round - 1) * 0.15) * 0.5)
 	else:
-		$EnemySpawner.wait_time = max(0.20, 1.0 - (current_round - 1) * 0.18)
+		$EnemySpawner.wait_time = max(0.5, 1.5 - (current_round - 1) * 0.15)
 		
 	for i in range(spawn_count):
 		var random_angle = randf_range(0.0, 2 * PI)
@@ -172,21 +177,6 @@ func _spawn_alert_and_enemy(spawn_pos: Vector2, hp: float, dmg: float) -> void:
 
 func _on_player_level_up(new_level: int) -> void:
 	hud.update_level(new_level)
-	get_tree().paused = true
-	
-	var effect = Sprite2D.new()
-	effect.set_script(preload("res://effect_sprite.gd"))
-	effect.process_mode = PROCESS_MODE_ALWAYS
-	add_child(effect)
-	effect.global_position = player.global_position + Vector2(0, -80)
-	effect.scale = Vector2(2.0, 2.0)
-	effect.z_index = 50
-	effect.setup(preload("res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.png"), "res://art/effects/levelup/symbol_level_up_text_001_large_blue/spritesheet.txt", 25.0, false)
-	
-	effect.animation_finished.connect(func():
-		var menu = UPGRADE_MENU_SCENE.instantiate()
-		add_child(menu)
-	)
 
 const STATS_MENU_SCENE = preload("res://stats_menu.tscn")
 var stats_menu_instance = null

@@ -132,13 +132,13 @@ var test_items = [
 		"icon": preload("res://art/icons/32x32/sword_02a.png")
 	},
 	{
-		"id": "vacuum_cleaner",
-		"title": "Vacuum Magnet",
-		"desc": "Absorb all leftover coins & hearts when round ends",
-		"price": 80,
+		"id": "rain_boots",
+		"title": "Rain Boots",
+		"desc": "Immune to yellow slow zones",
+		"price": 60,
 		"action_type": "special",
-		"special_action": "absorb_round_end",
-		"icon": preload("res://art/icons/32x32/gem_01b.png")
+		"special_action": "urine_immunity",
+		"icon": preload("res://art/icons/32x32/boots_01c.png")
 	},
 	{
 		"id": "coin_recycler",
@@ -188,8 +188,8 @@ func _generate_shop_items() -> void:
 	
 	var pool = test_items.duplicate()
 	if is_instance_valid(player):
-		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
-			pool = pool.filter(func(item): return item.get("id") != "vacuum_cleaner")
+		if "urine_immunity" in player and player.urine_immunity:
+			pool = pool.filter(func(item): return item.get("id") != "rain_boots")
 		if "coin_recycle_pct" in player and player.coin_recycle_pct >= 100.0:
 			pool = pool.filter(func(item): return item.get("id") != "coin_recycler")
 		
@@ -414,8 +414,8 @@ func _rebuild_ui() -> void:
 		_add_stat_row(stats_list, preload("res://art/icons/32x32/leaf_01a.png"), "HP Regen", str(snapped(player.regen_speed, 0.1)) + " / sec")
 		_add_stat_row(stats_list, preload("res://art/icons/32x32/shield_01a.png"), "Shield", str(player.shield))
 		_add_stat_row(stats_list, preload("res://art/icons/32x32/boots_01a.png"), "Move Speed", str(int(player.default_speed)))
-		if "absorb_pickups_on_round_end" in player and player.absorb_pickups_on_round_end:
-			_add_stat_row(stats_list, preload("res://art/icons/32x32/gem_01b.png"), "Vacuum Magnet", "ACTIVE")
+		if "urine_immunity" in player and player.urine_immunity:
+			_add_stat_row(stats_list, preload("res://art/icons/32x32/boots_01c.png"), "Rain Boots", "ACTIVE")
 		
 		var near_pct = int(player.near_field_damage_modifier * 100.0)
 		var range_pct = int(player.ranged_damage_modifier * 100.0)
@@ -544,8 +544,10 @@ func _buy_item(item: Dictionary, price: int) -> void:
 			w.fire_rate *= 1.04
 			w.update_timer()
 	elif action == "special":
-		if item.get("special_action") == "absorb_round_end":
-			player.absorb_pickups_on_round_end = true
+		if item.get("special_action") == "urine_immunity":
+			player.urine_immunity = true
+			if player.has_method("_update_speed"):
+				player._update_speed()
 		elif item.get("special_action") == "add_coin_recycle":
 			player.coin_recycle_pct = min(100.0, player.coin_recycle_pct + 20.0)
 	else:

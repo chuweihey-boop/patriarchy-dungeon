@@ -25,7 +25,7 @@ var near_field_damage_modifier: float = 1.0
 var ranged_damage_modifier: float = 1.0
 var regen_speed: float = 0.0
 var shield: int = 0
-var absorb_pickups_on_round_end: bool = false
+var urine_immunity: bool = false
 var coin_recycle_pct: float = 0.0
 var current_dir: String = "down"
 var slow_zones_overlapping: int = 0
@@ -302,7 +302,7 @@ func remove_slow_zone() -> void:
 	_update_speed()
 
 func _update_speed() -> void:
-	if slow_zones_overlapping > 0:
+	if slow_zones_overlapping > 0 and not urine_immunity:
 		speed = default_speed * 0.5
 	else:
 		speed = default_speed
