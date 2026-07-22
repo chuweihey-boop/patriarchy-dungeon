@@ -32,7 +32,7 @@ func _ready() -> void:
 	if not is_mobile and not DisplayServer.is_touchscreen_available():
 		show_resting_joystick = false
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 		

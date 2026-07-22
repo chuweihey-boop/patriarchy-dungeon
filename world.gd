@@ -189,6 +189,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				stats_menu_instance = STATS_MENU_SCENE.instantiate()
 				add_child(stats_menu_instance)
+		elif event.keycode == KEY_ESCAPE:
+			if not get_tree().paused:
+				get_viewport().set_input_as_handled()
+				get_tree().paused = true
+				var pause_menu = preload("res://pause_menu.gd").new()
+				add_child(pause_menu)
 
 
 
