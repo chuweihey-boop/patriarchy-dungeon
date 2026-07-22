@@ -14,9 +14,19 @@ func _ready() -> void:
 
 	var panel = PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(450, 450)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_right", 5)
+	scroll.add_child(margin)
+	
 	var vbox = VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.add_child(vbox)
 	add_child(panel)
 	
 	var close_btn = Button.new()
@@ -112,6 +122,68 @@ func _ready() -> void:
 	grid.add_child(lbl_hp)
 	grid.add_child(enemy_hp_edit)
 
+	vbox.add_child(HSeparator.new())
+	
+	var plbl = Label.new()
+	plbl.text = "4. Player Stats:"
+	vbox.add_child(plbl)
+	
+	var pgrid = GridContainer.new()
+	pgrid.columns = 2
+	vbox.add_child(pgrid)
+	
+	if player:
+		_add_player_stat_edit(pgrid, player, "HP (Current)", "health", func(val):
+			player.health = min(val, player.max_health)
+			player.health_changed.emit(player.health, player.max_health)
+		)
+		_add_player_stat_edit(pgrid, player, "Max HP", "max_health", func(val):
+			player.max_health = val
+			if player.health > player.max_health:
+				player.health = player.max_health
+			player.health_changed.emit(player.health, player.max_health)
+		)
+		_add_player_stat_edit(pgrid, player, "Coins", "coins", func(val):
+			player.coins = int(val)
+			player.coins_changed.emit(player.coins)
+		)
+		_add_player_stat_edit(pgrid, player, "Speed (Base)", "default_speed", func(val):
+			player.default_speed = val
+			player.speed = val
+		)
+		_add_player_stat_edit(pgrid, player, "Melee Dmg Mod", "near_field_damage_modifier", func(val):
+			player.near_field_damage_modifier = val
+		)
+		_add_player_stat_edit(pgrid, player, "Ranged Dmg Mod", "ranged_damage_modifier", func(val):
+			player.ranged_damage_modifier = val
+		)
+		_add_player_stat_edit(pgrid, player, "Atk Freq Mod", "attack_frequency_modifier", func(val):
+			player.attack_frequency_modifier = val
+			for c in player.get_children():
+				if c.has_method("update_timer"):
+					c.update_timer()
+		)
+
+func _add_player_stat_edit(parent: Control, player: Node, label_text: String, prop_name: String, callback: Callable) -> void:
+	var lbl = Label.new()
+	lbl.text = label_text + ":"
+	var edit = LineEdit.new()
+	var val = player.get(prop_name)
+	edit.text = str(IntOrFloat(val)) if val != null else "0"
+	
+	edit.text_changed.connect(func(text):
+		if text.is_valid_float():
+			callback.call(text.to_float())
+	)
+	
+	parent.add_child(lbl)
+	parent.add_child(edit)
+
+func IntOrFloat(val):
+	if typeof(val) == TYPE_FLOAT:
+		return val
+	return int(val)
+
 func _set_all_weapons(state: bool) -> void:
 	for i in range(weapon_checkboxes.size()):
 		weapon_checkboxes[i].button_pressed = state
@@ -140,3 +212,9 @@ func _on_weapon_toggled(toggled_on: bool, index: int) -> void:
 func _on_shop_pressed() -> void:
 	var menu = UPGRADE_MENU_SCENE.instantiate()
 	get_tree().current_scene.add_child(menu)
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.is_echo():
+		if event.keycode == KEY_ESCAPE:
+			get_viewport().set_input_as_handled()
+			get_tree().paused = false
+			queue_free()

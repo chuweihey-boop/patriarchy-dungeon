@@ -32,9 +32,15 @@ func update_health(current: float, max_health: float) -> void:
 	health_bar.get_node("Label").text = "%d/%d" % [int(current), int(max_health)]
 
 func _on_debug_btn_pressed() -> void:
-	get_tree().paused = true
-	var debug_menu = preload("res://debug_menu.gd").new()
-	get_tree().current_scene.add_child(debug_menu)
+	var existing = get_tree().current_scene.get_node_or_null("DebugMenu")
+	if existing:
+		get_tree().paused = false
+		existing.queue_free()
+	else:
+		get_tree().paused = true
+		var debug_menu = preload("res://debug_menu.gd").new()
+		debug_menu.name = "DebugMenu"
+		get_tree().current_scene.add_child(debug_menu)
 
 
 func update_timer(time_remaining: float, current_round: int = 1) -> void:
