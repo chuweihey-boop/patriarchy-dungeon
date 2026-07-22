@@ -13,6 +13,7 @@ func _ready() -> void:
 	var debug_btn = Button.new()
 	debug_btn.name = "DebugButton"
 	debug_btn.text = "Debug Mode"
+	debug_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	debug_btn.anchor_left = 1.0
 	debug_btn.anchor_right = 1.0
 	debug_btn.offset_left = -120

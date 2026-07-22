@@ -12,10 +12,15 @@ var enemy_hp_edit: LineEdit
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS # Keep processing when tree is paused
 
+	var center = CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(center)
+
 	var panel = PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
+	center.add_child(panel)
+
 	var scroll = ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(450, 450)
+	scroll.custom_minimum_size = Vector2(450, 350)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	panel.add_child(scroll)
 
@@ -27,7 +32,7 @@ func _ready() -> void:
 	vbox.add_theme_constant_override("separation", 10)
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.add_child(vbox)
-	add_child(panel)
+
 	
 	var close_btn = Button.new()
 	close_btn.text = "Close Debug Menu"
