@@ -10,6 +10,18 @@ func _ready() -> void:
 	var joystick = preload("res://virtual_joystick.gd").new()
 	$Control.add_child(joystick)
 	
+	var debug_btn = Button.new()
+	debug_btn.name = "DebugButton"
+	debug_btn.text = "Debug Mode"
+	debug_btn.anchor_left = 1.0
+	debug_btn.anchor_right = 1.0
+	debug_btn.offset_left = -120
+	debug_btn.offset_right = -10
+	debug_btn.offset_top = 90
+	debug_btn.offset_bottom = 120
+	debug_btn.pressed.connect(_on_debug_btn_pressed)
+	$Control.add_child(debug_btn)
+	
 	# Initialize display
 	timer_label.text = "ROUND 1/5   03:00"
 	coin_label.text = "0"
@@ -18,6 +30,11 @@ func update_health(current: float, max_health: float) -> void:
 	health_bar.max_value = max_health
 	health_bar.value = current
 	health_bar.get_node("Label").text = "%d/%d" % [int(current), int(max_health)]
+
+func _on_debug_btn_pressed() -> void:
+	get_tree().paused = true
+	var debug_menu = preload("res://debug_menu.gd").new()
+	get_tree().current_scene.add_child(debug_menu)
 
 
 func update_timer(time_remaining: float, current_round: int = 1) -> void:

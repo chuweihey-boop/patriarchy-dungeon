@@ -14,6 +14,9 @@ var game_won: bool = false
 var is_transitioning_round: bool = false
 var round_transition_timer: float = 0.0
 
+var debug_enemy_num_mult: float = 1.0
+var debug_enemy_dmg_mult: float = 1.0
+var debug_enemy_hp_mult: float = 1.0
 func _ready() -> void:
 	$EnemySpawner.wait_time = 1.0
 	if player:
@@ -140,6 +143,7 @@ func _on_enemy_spawner_timeout() -> void:
 		$EnemySpawner.wait_time = max(0.4, (1.2 - (current_round - 1) * 0.15) * 0.5)
 	else:
 		$EnemySpawner.wait_time = max(0.5, 1.5 - (current_round - 1) * 0.15)
+	spawn_count = int(max(1, spawn_count * debug_enemy_num_mult))
 		
 	for i in range(spawn_count):
 		var random_angle = randf_range(0.0, 2 * PI)
@@ -148,8 +152,8 @@ func _on_enemy_spawner_timeout() -> void:
 		var spawn_offset = spawn_direction * spawn_distance
 		var spawn_pos = player.global_position + spawn_offset
 		
-		var enemy_hp = 12.0 * (1.0 + (current_round - 1) * 0.5)
-		var enemy_dmg = 10.0 * (1.0 + (current_round - 1) * 0.3)
+		var enemy_hp = 12.0 * (1.0 + (current_round - 1) * 0.5) * debug_enemy_hp_mult
+		var enemy_dmg = 10.0 * (1.0 + (current_round - 1) * 0.3) * debug_enemy_dmg_mult
 		
 		_spawn_alert_and_enemy(spawn_pos, enemy_hp, enemy_dmg)
 
