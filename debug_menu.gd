@@ -2,7 +2,7 @@ extends CanvasLayer
 
 const UPGRADE_MENU_SCENE = preload("res://upgrade_menu.tscn")
 
-var weapons = ["Egg Basket", "Negi", "Fish Knife", "Wooden Sword"]
+var weapons = ["Egg Basket", "Negi", "Fish Knife", "Wooden Sword", "Square Dance Amp"]
 var weapon_checkboxes = []
 
 var enemy_num_edit: LineEdit

@@ -197,14 +197,15 @@ func _generate_shop_items() -> void:
 		var owned_types = []
 		for w in current_weapons:
 			owned_types.append(w.weapon_type)
-		var names = ["Egg Basket", "Negi", "Fish Knife", "Wooden Sword"]
+		var names = ["Egg Basket", "Negi", "Fish Knife", "Wooden Sword", "Square Dance Amp"]
 		var weapon_icons = [
 			preload("res://art/icons/32x32/potion_02a.png"),
 			preload("res://art/icons/32x32/leaf_01a.png"),
 			preload("res://art/icons/32x32/fish_01a.png"),
-			preload("res://art/icons/32x32/sword_01a.png")
+			preload("res://art/icons/32x32/sword_01a.png"),
+			preload("res://art/icons/32x32/book_04a.png")
 		]
-		for tid in [0, 1, 2, 3]:
+		for tid in [0, 1, 2, 3, 4]:
 			if not tid in owned_types:
 				pool.append({
 					"id": "add_w_" + str(tid),
@@ -219,15 +220,48 @@ func _generate_shop_items() -> void:
 	for w in current_weapons:
 		var w_name = w.get_weapon_name() if w.has_method("get_weapon_name") else "Weapon"
 		var w_icon = w.get_weapon_icon() if w.has_method("get_weapon_icon") else preload("res://art/icons/32x32/arrow_01a.png")
-		pool.append({
-			"id": "up_w_" + str(w.get_instance_id()),
-			"action_type": "upgrade_weapon",
-			"target_weapon": w,
-			"title": "Upgrade " + w_name,
-			"desc": "+8% Damage, +4% Attack Speed (to Lv." + str(w.level + 1) + ")",
-			"price": 45 * w.level,
-			"icon": w_icon
-		})
+		
+		if "weapon_type" in w and w.weapon_type == 4: # SQUAREDANCEAMP
+			pool.append({
+				"id": "up_w_" + str(w.get_instance_id()) + "_n",
+				"action_type": "upgrade_weapon_sd",
+				"target_weapon": w,
+				"sd_type": "note",
+				"title": "Upgrade " + w_name,
+				"desc": "+1 Note (to Lv." + str(w.level + 1) + ")",
+				"price": 45 * w.level,
+				"icon": w_icon
+			})
+			pool.append({
+				"id": "up_w_" + str(w.get_instance_id()) + "_s",
+				"action_type": "upgrade_weapon_sd",
+				"target_weapon": w,
+				"sd_type": "speed",
+				"title": "Upgrade " + w_name,
+				"desc": "+25% Spin Speed (to Lv." + str(w.level + 1) + ")",
+				"price": 45 * w.level,
+				"icon": w_icon
+			})
+			pool.append({
+				"id": "up_w_" + str(w.get_instance_id()) + "_d",
+				"action_type": "upgrade_weapon_sd",
+				"target_weapon": w,
+				"sd_type": "damage",
+				"title": "Upgrade " + w_name,
+				"desc": "+30% Damage (to Lv." + str(w.level + 1) + ")",
+				"price": 45 * w.level,
+				"icon": w_icon
+			})
+		else:
+			pool.append({
+				"id": "up_w_" + str(w.get_instance_id()),
+				"action_type": "upgrade_weapon",
+				"target_weapon": w,
+				"title": "Upgrade " + w_name,
+				"desc": "+8% Damage, +4% Attack Speed (to Lv." + str(w.level + 1) + ")",
+				"price": 45 * w.level,
+				"icon": w_icon
+			})
 	
 	pool.shuffle()
 	offered_items = pool.slice(0, min(3, pool.size()))
@@ -543,6 +577,17 @@ func _buy_item(item: Dictionary, price: int) -> void:
 			w.damage_multiplier *= 1.08
 			w.fire_rate *= 1.04
 			w.update_timer()
+	elif action == "upgrade_weapon_sd":
+		var w = item["target_weapon"]
+		if is_instance_valid(w):
+			w.level += 1
+			if item["sd_type"] == "note":
+				w.num_notes += 1
+			elif item["sd_type"] == "speed":
+				w.fire_rate *= 1.25
+			elif item["sd_type"] == "damage":
+				w.damage_multiplier *= 1.3
+			w._setup_square_dance_amp()
 	elif action == "special":
 		if item.get("special_action") == "urine_immunity":
 			player.urine_immunity = true

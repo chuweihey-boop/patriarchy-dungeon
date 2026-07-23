@@ -1,11 +1,15 @@
 extends Node2D
 
-enum WeaponType { EGGBUSKET, NEGI, FISHKNIFE, WOODENSWORD }
+enum WeaponType { EGGBUSKET, NEGI, FISHKNIFE, WOODENSWORD, SQUAREDANCEAMP }
 
 @export var bullet_scene: PackedScene = preload("res://bullet.tscn")
 @export var weapon_type: WeaponType = WeaponType.EGGBUSKET
 @export var damage_multiplier: float = 1.0
 var level: int = 1
+var num_notes: int = 1
+var base_orbital_speed: float = 3.0
+var orbitals_node: Node2D = null
+
 
 func get_weapon_name() -> String:
 	match weapon_type:
@@ -13,6 +17,7 @@ func get_weapon_name() -> String:
 		WeaponType.NEGI: return "Negi"
 		WeaponType.FISHKNIFE: return "Fish Knife"
 		WeaponType.WOODENSWORD: return "Wooden Sword"
+		WeaponType.SQUAREDANCEAMP: return "Square Dance Amp"
 	return "Weapon"
 
 func get_weapon_icon() -> Texture2D:
@@ -21,6 +26,7 @@ func get_weapon_icon() -> Texture2D:
 		WeaponType.NEGI: return preload("res://art/icons/32x32/leaf_01a.png")
 		WeaponType.FISHKNIFE: return preload("res://art/icons/32x32/fish_01a.png")
 		WeaponType.WOODENSWORD: return preload("res://art/icons/32x32/sword_01a.png")
+		WeaponType.SQUAREDANCEAMP: return preload("res://art/icons/32x32/book_04a.png")
 	return null
 
 var fire_rate: float = 1.0 # Shots per second
@@ -48,7 +54,12 @@ func initialize_weapon_stats() -> void:
 		WeaponType.WOODENSWORD:
 			fire_rate = 3.5
 			shoot_range = 220.0
-	update_timer()
+		WeaponType.SQUAREDANCEAMP:
+			fire_rate = 1.0
+			shoot_range = 100.0
+			_setup_square_dance_amp()
+	if fire_rate > 0.0:
+		update_timer()
 
 func update_timer() -> void:
 	var modifier = player.attack_frequency_modifier if is_instance_valid(player) and "attack_frequency_modifier" in player else 1.0
@@ -151,3 +162,32 @@ func _spawn_directional_impact(pos: Vector2, dir: Vector2) -> void:
 	effect.rotation = dir.angle()
 	effect.scale = Vector2(2.5, 2.5)
 	effect.setup(preload("res://art/effects/directional_impact/spritesheet.png"), "res://art/effects/directional_impact/spritesheet.txt", 20.0, false)
+
+func _setup_square_dance_amp() -> void:
+	if not is_inside_tree():
+		await ready
+	if is_instance_valid(orbitals_node):
+		orbitals_node.queue_free()
+	orbitals_node = Node2D.new()
+	add_child(orbitals_node)
+	
+	var r_mod = player.ranged_damage_modifier if is_instance_valid(player) and "ranged_damage_modifier" in player else 1.0
+	var dmg = 8.0 * damage_multiplier * r_mod
+	
+	for i in range(num_notes):
+		var bullet = bullet_scene.instantiate()
+		bullet.damage = dmg
+		bullet.speed = 0.0
+		bullet.lifetime = 99999.0
+		bullet.is_melee = true
+		bullet.get_node("Sprite2D").texture = preload("res://art/icons/32x32/book_04b.png") # Temp note icon
+		bullet.get_node("Sprite2D").scale = Vector2(2.0, 2.0)
+		var angle = i * (TAU / max(1, num_notes))
+		bullet.position = Vector2(cos(angle), sin(angle)) * shoot_range
+		orbitals_node.add_child(bullet)
+
+func _process(delta: float) -> void:
+	if weapon_type == WeaponType.SQUAREDANCEAMP and is_instance_valid(orbitals_node):
+		orbitals_node.position = -position
+		var speed_mod = player.attack_frequency_modifier if is_instance_valid(player) and "attack_frequency_modifier" in player else 1.0
+		orbitals_node.rotation += base_orbital_speed * speed_mod * fire_rate * delta
