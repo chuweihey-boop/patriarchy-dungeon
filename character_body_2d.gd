@@ -381,4 +381,5 @@ func use_ultimate() -> void:
 		get_tree().current_scene.add_child(effect)
 		effect.global_position = global_position
 		effect.scale = Vector2(4.0, 4.0)
-		effect.setup(preload("res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.png"), "res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.txt", 20.0, true)
+		effect.modulate = Color(0.2, 1.0, 0.3)
+		effect.setup(preload("res://art/effects/explosion/spritesheet.png"), "res://art/effects/explosion/spritesheet.txt", 20.0, false)
