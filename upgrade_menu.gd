@@ -148,6 +148,15 @@ var test_items = [
 		"action_type": "special",
 		"special_action": "add_coin_recycle",
 		"icon": preload("res://art/icons/32x32/coin_01a.png")
+	},
+	{
+		"id": "sunglasses",
+		"title": "Sunglasses",
+		"desc": "+10% Heavy Hit Rate, +5% Missing Rate",
+		"price": 30,
+		"action_type": "special",
+		"special_action": "add_sunglasses",
+		"icon": preload("res://art/icons/32x32/crystal_01a.png")
 	}
 ]
 
@@ -453,8 +462,12 @@ func _rebuild_ui() -> void:
 		
 		var near_pct = int(player.near_field_damage_modifier * 100.0)
 		var range_pct = int(player.ranged_damage_modifier * 100.0)
+		var miss_pct = int(player.miss_chance * 100.0) if "miss_chance" in player else 0
+		var hvy_pct = int(player.heavy_hit_chance * 100.0) if "heavy_hit_chance" in player else 0
 		_add_stat_row(stats_list, preload("res://art/icons/32x32/gloves_01a.png"), "Near Field Dmg", str(near_pct) + "%")
 		_add_stat_row(stats_list, preload("res://art/icons/32x32/bow_01a.png"), "Ranged Dmg", str(range_pct) + "%")
+		if miss_pct > 0 or hvy_pct > 0:
+			_add_stat_row(stats_list, preload("res://art/icons/32x32/crystal_01a.png"), "Crit / Miss", str(hvy_pct) + "% / " + str(miss_pct) + "%")
 		
 		var w_header = HBoxContainer.new()
 		stats_list.add_child(w_header)
@@ -595,6 +608,9 @@ func _buy_item(item: Dictionary, price: int) -> void:
 				player._update_speed()
 		elif item.get("special_action") == "add_coin_recycle":
 			player.coin_recycle_pct = min(100.0, player.coin_recycle_pct + 20.0)
+		elif item.get("special_action") == "add_sunglasses":
+			player.miss_chance += 0.05
+			player.heavy_hit_chance += 0.10
 	else:
 		var stats = item.get("stats", {})
 		for stat_name in stats:

@@ -168,6 +168,34 @@ func _ready() -> void:
 				if c.has_method("update_timer"):
 					c.update_timer()
 		)
+		
+		# Ultimate skill selection
+		var ulbl = Label.new()
+		ulbl.text = "Ultimate:"
+		var uopt = OptionButton.new()
+		uopt.add_item("None", 0)
+		uopt.add_item("Screen Wipe", 1)
+		uopt.add_item("Heal Burst", 2)
+		
+		# Set initial selection
+		if player.current_ultimate == "none":
+			uopt.select(0)
+		elif player.current_ultimate == "screen_wipe":
+			uopt.select(1)
+		elif player.current_ultimate == "heal_burst":
+			uopt.select(2)
+			
+		uopt.item_selected.connect(func(index: int):
+			if index == 0:
+				player.current_ultimate = "none"
+			elif index == 1:
+				player.current_ultimate = "screen_wipe"
+			elif index == 2:
+				player.current_ultimate = "heal_burst"
+		)
+		
+		pgrid.add_child(ulbl)
+		pgrid.add_child(uopt)
 
 func _add_player_stat_edit(parent: Control, player: Node, label_text: String, prop_name: String, callback: Callable) -> void:
 	var lbl = Label.new()

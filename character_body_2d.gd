@@ -29,9 +29,16 @@ var urine_immunity: bool = false
 var coin_recycle_pct: float = 0.0
 var current_dir: String = "down"
 var slow_zones_overlapping: int = 0
+var miss_chance: float = 0.0
+var heavy_hit_chance: float = 0.0
 
 var damage_timer: float = 0.0
 var damage_tween: Tween = null
+
+var is_dashing: bool = false
+var dash_cooldown: float = 0.0
+var ultimate_cooldown: float = 0.0
+var current_ultimate: String = "screen_wipe"
 
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var sprite: AnimatedSprite2D = $Sprite
@@ -72,10 +79,28 @@ func _physics_process(delta: float) -> void:
 		health = min(max_health, health + regen_speed * delta)
 		health_changed.emit(health, max_health)
 
-	# Move the character with momentum (acceleration/deceleration)
+	# Cooldowns
+	if dash_cooldown > 0:
+		dash_cooldown -= delta
+	if ultimate_cooldown > 0:
+		ultimate_cooldown -= delta
+		
+	# Input for Dash (Space) and Ultimate (Q)
+	if Input.is_physical_key_pressed(KEY_SPACE) and dash_cooldown <= 0.0:
+		dash()
+	if Input.is_physical_key_pressed(KEY_Q) and ultimate_cooldown <= 0.0:
+		use_ultimate()
+		
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	var target_velocity = direction * speed
-	velocity = velocity.move_toward(target_velocity, acceleration * delta)
+	var current_speed = speed * 2.5 if is_dashing else speed
+	var target_velocity = direction * current_speed
+	
+	if is_dashing:
+		# Instant acceleration while dashing
+		velocity = velocity.move_toward(target_velocity, acceleration * 5.0 * delta)
+	else:
+		velocity = velocity.move_toward(target_velocity, acceleration * delta)
+		
 	move_and_slide()
 
 	# Play Walk / Idle Animations based on 8-directional input mapping to 6 animations
@@ -306,3 +331,54 @@ func _update_speed() -> void:
 		speed = default_speed * 0.5
 	else:
 		speed = default_speed
+
+func dash() -> void:
+	is_dashing = true
+	dash_cooldown = 1.0 # 1 second cooldown
+	
+	# Optional: make invincible during dash
+	var old_mask = hurtbox.collision_mask
+	hurtbox.collision_mask = 0
+	
+	# Ghost Trail Effect / Polish
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate:a", 0.5, 0.1)
+	
+	await get_tree().create_timer(0.2).timeout
+	
+	is_dashing = false
+	if is_instance_valid(hurtbox):
+		hurtbox.collision_mask = old_mask
+	if is_instance_valid(sprite):
+		sprite.modulate.a = 1.0
+
+func use_ultimate() -> void:
+	if current_ultimate == "none":
+		return
+		
+	if current_ultimate == "screen_wipe":
+		ultimate_cooldown = 10.0 # 10s cooldown
+		# Example Ultimate: Screen shake + huge damage wave to all enemies
+		var enemies = get_tree().get_nodes_in_group("enemies")
+		for enemy in enemies:
+			if is_instance_valid(enemy) and enemy.has_method("take_damage"):
+				var base_dmg = 100.0 * (1.0 + near_field_damage_modifier + ranged_damage_modifier)
+				enemy.take_damage(base_dmg)
+				
+		var explosion = Sprite2D.new()
+		explosion.set_script(preload("res://effect_sprite.gd"))
+		get_tree().current_scene.add_child(explosion)
+		explosion.global_position = global_position
+		explosion.scale = Vector2(8.0, 8.0)
+		explosion.setup(preload("res://art/effects/directional_impact/spritesheet.png"), "res://art/effects/directional_impact/spritesheet.txt", 15.0, false)
+	elif current_ultimate == "heal_burst":
+		ultimate_cooldown = 15.0
+		heal(max_health * 0.5)
+		
+		# Show visual
+		var effect = Sprite2D.new()
+		effect.set_script(preload("res://effect_sprite.gd"))
+		get_tree().current_scene.add_child(effect)
+		effect.global_position = global_position
+		effect.scale = Vector2(4.0, 4.0)
+		effect.setup(preload("res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.png"), "res://art/effects/gameover/symbol_game_over_text_001_large_red/spritesheet.txt", 20.0, true)

@@ -32,13 +32,21 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("enemies"):
+		var actual_damage = damage
+		var player = get_tree().get_first_node_in_group("player")
+		if is_instance_valid(player):
+			if "miss_chance" in player and randf() < player.miss_chance:
+				actual_damage = 0.0
+			elif "heavy_hit_chance" in player and randf() < player.heavy_hit_chance:
+				actual_damage = damage * 2.0
+				
 		if is_melee:
 			if body.has_method("take_damage"):
-				body.take_damage(damage)
+				body.take_damage(actual_damage)
 		else:
-			_apply_splash_damage()
-
-func _apply_splash_damage() -> void:
+			_apply_splash_damage(actual_damage)
+		
+func _apply_splash_damage(splash_dmg: float = damage) -> void:
 	var explosion = Sprite2D.new()
 	explosion.set_script(preload("res://effect_sprite.gd"))
 	get_tree().current_scene.add_child(explosion)
@@ -52,6 +60,6 @@ func _apply_splash_damage() -> void:
 	for enemy in enemies:
 		if is_instance_valid(enemy) and enemy.has_method("take_damage"):
 			if global_position.distance_to(enemy.global_position) <= splash_radius:
-				enemy.take_damage(damage)
+				enemy.take_damage(splash_dmg)
 			
 	queue_free()

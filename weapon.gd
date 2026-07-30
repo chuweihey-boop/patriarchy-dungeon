@@ -6,7 +6,7 @@ enum WeaponType { EGGBUSKET, NEGI, FISHKNIFE, WOODENSWORD, SQUAREDANCEAMP }
 @export var weapon_type: WeaponType = WeaponType.EGGBUSKET
 @export var damage_multiplier: float = 1.0
 var level: int = 1
-var num_notes: int = 1
+var num_notes: int = 3
 var base_orbital_speed: float = 3.0
 var orbitals_node: Node2D = null
 

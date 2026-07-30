@@ -7,8 +7,50 @@ extends CanvasLayer
 
 func _ready() -> void:
 	# Add mobile virtual joystick
+	var is_mobile = OS.has_feature("mobile") or OS.has_feature("web_android") or OS.has_feature("web_ios") or DisplayServer.is_touchscreen_available()
 	var joystick = preload("res://virtual_joystick.gd").new()
 	$Control.add_child(joystick)
+	
+	if is_mobile:
+		var dash_btn = Button.new()
+		dash_btn.name = "DashButton"
+		dash_btn.icon = preload("res://art/icons/32x32/boots_01a.png")
+		dash_btn.text = "Dash"
+		dash_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+		dash_btn.anchor_left = 0.0
+		dash_btn.anchor_right = 0.0
+		dash_btn.anchor_top = 1.0
+		dash_btn.anchor_bottom = 1.0
+		dash_btn.offset_left = 130
+		dash_btn.offset_right = 230
+		dash_btn.offset_top = -100
+		dash_btn.offset_bottom = -30
+		dash_btn.pressed.connect(func():
+			var p = get_tree().get_first_node_in_group("player")
+			if is_instance_valid(p) and p.has_method("dash") and p.dash_cooldown <= 0.0:
+				p.dash()
+		)
+		$Control.add_child(dash_btn)
+		
+		var ult_btn = Button.new()
+		ult_btn.name = "UltButton"
+		ult_btn.icon = preload("res://art/icons/32x32/skull_01a.png")
+		ult_btn.text = "Emit"
+		ult_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
+		ult_btn.anchor_left = 1.0
+		ult_btn.anchor_right = 1.0
+		ult_btn.anchor_top = 1.0
+		ult_btn.anchor_bottom = 1.0
+		ult_btn.offset_left = -230
+		ult_btn.offset_right = -130
+		ult_btn.offset_top = -100
+		ult_btn.offset_bottom = -30
+		ult_btn.pressed.connect(func():
+			var p = get_tree().get_first_node_in_group("player")
+			if is_instance_valid(p) and p.has_method("use_ultimate") and p.ultimate_cooldown <= 0.0:
+				p.use_ultimate()
+		)
+		$Control.add_child(ult_btn)
 	
 	var debug_btn = Button.new()
 	debug_btn.name = "DebugButton"
