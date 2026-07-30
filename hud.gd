@@ -63,6 +63,16 @@ func _ready() -> void:
 	debug_btn.process_mode = Node.PROCESS_MODE_ALWAYS
 	debug_btn.anchor_left = 1.0
 	debug_btn.anchor_right = 1.0
+	debug_btn.offset_left = -120
+	debug_btn.offset_right = -10
+	debug_btn.offset_top = 90
+	debug_btn.offset_bottom = 120
+	debug_btn.pressed.connect(_on_debug_btn_pressed)
+	$Control.add_child(debug_btn)
+	
+	# Initialize display
+	timer_label.text = "ROUND 1/5   03:00"
+	coin_label.text = "0"
 	
 	_setup_ultimate_box()
 
@@ -112,16 +122,6 @@ func _setup_ultimate_box() -> void:
 	ult_cooldown_label.add_theme_constant_override("outline_size", 4)
 	ult_cooldown_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	hbox.add_child(ult_cooldown_label)
-	debug_btn.offset_left = -120
-	debug_btn.offset_right = -10
-	debug_btn.offset_top = 90
-	debug_btn.offset_bottom = 120
-	debug_btn.pressed.connect(_on_debug_btn_pressed)
-	$Control.add_child(debug_btn)
-	
-	# Initialize display
-	timer_label.text = "ROUND 1/5   03:00"
-	coin_label.text = "0"
 
 func update_health(current: float, max_health: float) -> void:
 	health_bar.max_value = max_health
