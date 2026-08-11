@@ -45,6 +45,8 @@ func _on_body_entered(body: Node) -> void:
 		if is_melee:
 			if body.has_method("take_damage"):
 				body.take_damage(actual_damage)
+				if weapon_source == "Square Dance Amp" and body.has_method("bounce_back"):
+					body.bounce_back(global_position)
 				_play_impact_sound_if_needed()
 		else:
 			_apply_splash_damage(actual_damage)
