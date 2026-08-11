@@ -30,6 +30,20 @@ func _ready() -> void:
 		hud.update_timer(round_time_remaining, current_round)
 		hud.show_wave_warning("ROUND 1 START!")
 		
+	# Play BGM and Game Start sounds
+	var bgm = AudioStreamPlayer.new()
+	bgm.stream = preload("res://art/sound/background.mp3")
+	bgm.autoplay = true
+	bgm.process_mode = PROCESS_MODE_ALWAYS
+	add_child(bgm)
+	
+	var start_sfx = AudioStreamPlayer.new()
+	start_sfx.stream = preload("res://art/sound/game_start.mp3")
+	start_sfx.autoplay = true
+	start_sfx.process_mode = PROCESS_MODE_ALWAYS
+	add_child(start_sfx)
+	start_sfx.finished.connect(start_sfx.queue_free)
+		
 	# Instantiate and display starting weapon selection menu
 	var weapon_selection = preload("res://weapon_selection_menu.tscn").instantiate()
 	add_child(weapon_selection)

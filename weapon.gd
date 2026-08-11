@@ -90,6 +90,7 @@ func _shoot(target: CharacterBody2D) -> void:
 		return
 	
 	var bullet = bullet_scene.instantiate()
+	bullet.weapon_source = get_weapon_name()
 	bullet.global_position = global_position
 	bullet.direction = global_position.direction_to(target.global_position)
 	
@@ -154,6 +155,17 @@ func _shoot(target: CharacterBody2D) -> void:
 	# Add the bullet to the world/root scene so it doesn't move with the player
 	get_tree().current_scene.add_child(bullet)
 
+	if weapon_type in [WeaponType.NEGI, WeaponType.FISHKNIFE, WeaponType.WOODENSWORD]:
+		var audio = AudioStreamPlayer2D.new()
+		if randf() > 0.5:
+			audio.stream = preload("res://art/sound/sword_woosh.mp3")
+		else:
+			audio.stream = preload("res://art/sound/sword_woosh2.mp3")
+		audio.global_position = global_position
+		audio.autoplay = true
+		get_tree().current_scene.add_child(audio)
+		audio.finished.connect(audio.queue_free)
+
 func _spawn_directional_impact(pos: Vector2, dir: Vector2) -> void:
 	var effect = Sprite2D.new()
 	effect.set_script(preload("res://effect_sprite.gd"))
@@ -176,6 +188,7 @@ func _setup_square_dance_amp() -> void:
 	
 	for i in range(num_notes):
 		var bullet = bullet_scene.instantiate()
+		bullet.weapon_source = get_weapon_name()
 		bullet.damage = dmg
 		bullet.speed = 0.0
 		bullet.lifetime = 99999.0

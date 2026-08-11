@@ -9,11 +9,23 @@ func _ready() -> void:
 	# Pause the game tree immediately during selection
 	get_tree().paused = true
 	
+	for btn in [eggbusket_button, negi_button, fishknife_button, woodensword_button]:
+		btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.mp3"))
+		btn.pressed.connect(func(): _play_ui_sound("UI_click.mp3"))
+		
 	# Connect buttons
 	eggbusket_button.pressed.connect(func(): _select_weapon(0))
 	negi_button.pressed.connect(func(): _select_weapon(1))
 	fishknife_button.pressed.connect(func(): _select_weapon(2))
 	woodensword_button.pressed.connect(func(): _select_weapon(3))
+
+func _play_ui_sound(sfx: String) -> void:
+	var audio = AudioStreamPlayer.new()
+	audio.stream = load("res://art/sound/" + sfx)
+	audio.autoplay = true
+	audio.process_mode = PROCESS_MODE_ALWAYS
+	add_child(audio)
+	audio.finished.connect(audio.queue_free)
 
 func _select_weapon(type_id: int) -> void:
 	var player = get_tree().get_first_node_in_group("player")

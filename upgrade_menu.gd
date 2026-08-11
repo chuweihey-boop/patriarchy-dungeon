@@ -186,10 +186,12 @@ func calculate_price(item: Dictionary) -> int:
 func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
 	for child in get_children():
+		if child is AudioStreamPlayer: continue
 		child.queue_free()
 		
 	_generate_shop_items()
 	_rebuild_ui()
+	_play_ui_sound("store_chime.mp3")
 
 func _generate_shop_items() -> void:
 	var player = get_tree().get_first_node_in_group("player")
@@ -277,6 +279,7 @@ func _generate_shop_items() -> void:
 
 func _rebuild_ui() -> void:
 	for child in get_children():
+		if child is AudioStreamPlayer: continue
 		child.queue_free()
 		
 	var root = Control.new()
@@ -357,6 +360,7 @@ func _rebuild_ui() -> void:
 		var can_afford = current_coins >= price
 		
 		var btn = Button.new()
+		_register_button_sounds(btn)
 		btn.custom_minimum_size = Vector2(0, 80)
 		if item.get("icon"):
 			btn.icon = item["icon"]
@@ -392,6 +396,7 @@ func _rebuild_ui() -> void:
 	var effective_cost = 0 if offered_items.is_empty() else current_refresh_cost
 	var can_reroll = current_coins >= effective_cost
 	var refresh_btn = Button.new()
+	_register_button_sounds(refresh_btn)
 	refresh_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	refresh_btn.custom_minimum_size = Vector2(0, 50)
 	var cost_str = (str(effective_cost) + " Coins") if effective_cost > 0 else "FREE!"
@@ -414,6 +419,7 @@ func _rebuild_ui() -> void:
 	action_hbox.add_child(refresh_btn)
 	
 	var done_btn = Button.new()
+	_register_button_sounds(done_btn)
 	done_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	done_btn.custom_minimum_size = Vector2(0, 50)
 	done_btn.text = "Done / Continue Game"
@@ -509,6 +515,7 @@ func _rebuild_ui() -> void:
 				slot_row.add_child(sp2)
 				
 				var sell_btn = Button.new()
+				_register_button_sounds(sell_btn)
 				sell_btn.icon = preload("res://art/icons/32x32/coin_01a.png")
 				sell_btn.text = "Sell (+" + str(resell_price) + ")"
 				sell_btn.add_theme_font_override("font", preload("res://fonts/Xolonium-Regular.ttf"))
@@ -656,3 +663,15 @@ func _sell_weapon(weapon: Node2D, resell_price: int) -> void:
 func _close_menu() -> void:
 	get_tree().paused = false
 	queue_free()
+
+
+func _register_button_sounds(btn: Button) -> void:
+	btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.mp3"))
+	btn.pressed.connect(func(): _play_ui_sound("UI_click.mp3"))
+
+func _play_ui_sound(sfx: String) -> void:
+	var audio = AudioStreamPlayer.new()
+	audio.stream = load("res://art/sound/" + sfx)
+	audio.autoplay = true
+	add_child(audio)
+	audio.finished.connect(audio.queue_free)

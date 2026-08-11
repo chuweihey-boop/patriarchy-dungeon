@@ -7,6 +7,8 @@ extends Area2D
 @export var splash_radius: float = 120.0
 @export var max_splash_targets: int = 5
 
+var weapon_source: String = ""
+
 const SPLASH_EFFECT_SCRIPT = preload("res://splash_effect.gd")
 
 var direction: Vector2 = Vector2.RIGHT
@@ -43,9 +45,21 @@ func _on_body_entered(body: Node) -> void:
 		if is_melee:
 			if body.has_method("take_damage"):
 				body.take_damage(actual_damage)
+				_play_impact_sound_if_needed()
 		else:
 			_apply_splash_damage(actual_damage)
+			_play_impact_sound_if_needed()
 		
+func _play_impact_sound_if_needed() -> void:
+	if weapon_source == "Egg Basket" or weapon_source == "Square Dance Amp":
+		var audio = AudioStreamPlayer2D.new()
+		audio.stream = preload("res://art/sound/attack_impact.mp3")
+		audio.global_position = global_position
+		audio.autoplay = true
+		get_tree().current_scene.add_child(audio)
+		# Ensure the audio node is cleaned up after playing
+		audio.finished.connect(audio.queue_free)
+
 func _apply_splash_damage(splash_dmg: float = damage) -> void:
 	var explosion = Sprite2D.new()
 	explosion.set_script(preload("res://effect_sprite.gd"))

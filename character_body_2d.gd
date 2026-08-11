@@ -160,6 +160,13 @@ func take_damage(amount: float) -> void:
 	
 	_spawn_damage_number(final_damage)
 	
+	# Hurt sound
+	var audio = AudioStreamPlayer.new()
+	audio.stream = preload("res://art/sound/hurt.mp3")
+	audio.autoplay = true
+	get_tree().current_scene.add_child(audio)
+	audio.finished.connect(audio.queue_free)
+	
 	if damage_tween and damage_tween.is_valid():
 		damage_tween.kill()
 	sprite.modulate = Color(1.0, 0.2, 0.2)
@@ -254,6 +261,12 @@ func gain_xp(amount: int) -> void:
 func _die() -> void:
 	print("Player Died!")
 	get_tree().paused = true
+	
+	var audio = AudioStreamPlayer.new()
+	audio.process_mode = PROCESS_MODE_ALWAYS
+	audio.stream = preload("res://art/sound/game_over.mp3")
+	audio.autoplay = true
+	get_tree().current_scene.add_child(audio)
 	
 	var canvas = CanvasLayer.new()
 	canvas.process_mode = PROCESS_MODE_ALWAYS

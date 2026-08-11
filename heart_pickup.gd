@@ -43,4 +43,12 @@ func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		if body.has_method("heal"):
 			body.heal(heal_amount)
+			_play_recover_sound()
 		queue_free()
+
+func _play_recover_sound() -> void:
+	var audio = AudioStreamPlayer.new()
+	audio.stream = preload("res://art/sound/hp_recover.mp3")
+	audio.autoplay = true
+	get_tree().current_scene.add_child(audio)
+	audio.finished.connect(audio.queue_free)

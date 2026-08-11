@@ -39,4 +39,14 @@ func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		if body.has_method("gain_xp"):
 			body.gain_xp(xp_value)
+		_play_collection_sound()
 		queue_free()
+
+func _play_collection_sound() -> void:
+	var audio = AudioStreamPlayer.new()
+	audio.stream = preload("res://art/sound/coin_collection.mp3")
+	audio.autoplay = true
+	# Use AudioStreamPlayer because it doesn't have spatial dropoff, 
+	# and attach it to the parent so it's not destroyed when the gem dies.
+	get_tree().current_scene.add_child(audio)
+	audio.finished.connect(audio.queue_free)

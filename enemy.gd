@@ -107,7 +107,16 @@ func _die() -> void:
 		heart.global_position = global_position + Vector2(randf_range(-20, 20), randf_range(-20, 20))
 		get_tree().current_scene.call_deferred("add_child", heart)
 		
+	_play_death_sound()
 	queue_free()
+
+func _play_death_sound() -> void:
+	var audio = AudioStreamPlayer2D.new()
+	audio.stream = preload("res://art/sound/enemy_die.mp3")
+	audio.global_position = global_position
+	audio.autoplay = true
+	get_tree().current_scene.call_deferred("add_child", audio)
+	audio.finished.connect(audio.queue_free)
 
 func _spawn_yellow_circle() -> void:
 	var zone = SLOW_ZONE_SCENE.instantiate()
