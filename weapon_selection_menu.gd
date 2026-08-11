@@ -22,9 +22,9 @@ func _ready() -> void:
 func _play_ui_sound(sfx: String) -> void:
 	var audio = AudioStreamPlayer.new()
 	audio.stream = load("res://art/sound/" + sfx)
-	audio.autoplay = true
 	audio.process_mode = PROCESS_MODE_ALWAYS
-	add_child(audio)
+	get_tree().current_scene.add_child(audio)
+	audio.play()
 	audio.finished.connect(audio.queue_free)
 
 func _select_weapon(type_id: int) -> void:

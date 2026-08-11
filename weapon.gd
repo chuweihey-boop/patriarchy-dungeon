@@ -162,8 +162,9 @@ func _shoot(target: CharacterBody2D) -> void:
 		else:
 			audio.stream = preload("res://art/sound/sword_woosh2.mp3")
 		audio.global_position = global_position
-		audio.autoplay = true
+		
 		get_tree().current_scene.add_child(audio)
+	audio.play()
 		audio.finished.connect(audio.queue_free)
 
 func _spawn_directional_impact(pos: Vector2, dir: Vector2) -> void:

@@ -55,8 +55,9 @@ func _play_impact_sound_if_needed() -> void:
 		var audio = AudioStreamPlayer2D.new()
 		audio.stream = preload("res://art/sound/attack_impact.mp3")
 		audio.global_position = global_position
-		audio.autoplay = true
+		
 		get_tree().current_scene.add_child(audio)
+	audio.play()
 		# Ensure the audio node is cleaned up after playing
 		audio.finished.connect(audio.queue_free)
 

@@ -114,7 +114,7 @@ func _play_death_sound() -> void:
 	var audio = AudioStreamPlayer2D.new()
 	audio.stream = preload("res://art/sound/enemy_die.mp3")
 	audio.global_position = global_position
-	audio.autoplay = true
+	
 	get_tree().current_scene.call_deferred("add_child", audio)
 	audio.finished.connect(audio.queue_free)
 
