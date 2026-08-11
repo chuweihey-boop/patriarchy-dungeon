@@ -48,7 +48,7 @@ func _on_body_entered(body: Node) -> void:
 
 func _play_recover_sound() -> void:
 	var audio = AudioStreamPlayer.new()
-	audio.stream = preload("res://art/sound/hp_recover.mp3")
+	audio.stream = preload("res://art/sound/hp_recover.wav")
 	
 	get_tree().current_scene.add_child(audio)
 	audio.play()

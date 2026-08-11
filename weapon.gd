@@ -156,12 +156,11 @@ func _shoot(target: CharacterBody2D) -> void:
 	get_tree().current_scene.add_child(bullet)
 
 	if weapon_type in [WeaponType.NEGI, WeaponType.FISHKNIFE, WeaponType.WOODENSWORD]:
-		var audio = AudioStreamPlayer2D.new()
+		var audio = AudioStreamPlayer.new()
 		if randf() > 0.5:
-			audio.stream = preload("res://art/sound/sword_woosh.mp3")
+			audio.stream = preload("res://art/sound/sword_woosh.wav")
 		else:
-			audio.stream = preload("res://art/sound/sword_woosh2.mp3")
-		audio.global_position = global_position
+			audio.stream = preload("res://art/sound/sword_woosh2.wav")
 		
 		get_tree().current_scene.add_child(audio)
 		audio.play()

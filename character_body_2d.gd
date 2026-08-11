@@ -162,7 +162,7 @@ func take_damage(amount: float) -> void:
 	
 	# Hurt sound
 	var audio = AudioStreamPlayer.new()
-	audio.stream = preload("res://art/sound/hurt.mp3")
+	audio.stream = preload("res://art/sound/hurt.wav")
 	
 	get_tree().current_scene.add_child(audio)
 	audio.play()
@@ -265,7 +265,7 @@ func _die() -> void:
 	
 	var audio = AudioStreamPlayer.new()
 	audio.process_mode = PROCESS_MODE_ALWAYS
-	audio.stream = preload("res://art/sound/game_over.mp3")
+	audio.stream = preload("res://art/sound/game_over.wav")
 	
 	get_tree().current_scene.add_child(audio)
 	audio.play()

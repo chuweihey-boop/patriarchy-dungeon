@@ -191,7 +191,7 @@ func _ready() -> void:
 		
 	_generate_shop_items()
 	_rebuild_ui()
-	_play_ui_sound("store_chime.mp3")
+	_play_ui_sound("store_chime.wav")
 
 func _generate_shop_items() -> void:
 	var player = get_tree().get_first_node_in_group("player")
@@ -666,8 +666,8 @@ func _close_menu() -> void:
 
 
 func _register_button_sounds(btn: Button) -> void:
-	btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.mp3"))
-	btn.pressed.connect(func(): _play_ui_sound("UI_click.mp3"))
+	btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.wav"))
+	btn.pressed.connect(func(): _play_ui_sound("UI_click.wav"))
 
 func _play_ui_sound(sfx: String) -> void:
 	var audio = AudioStreamPlayer.new()

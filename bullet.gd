@@ -52,9 +52,8 @@ func _on_body_entered(body: Node) -> void:
 		
 func _play_impact_sound_if_needed() -> void:
 	if weapon_source == "Egg Basket" or weapon_source == "Square Dance Amp":
-		var audio = AudioStreamPlayer2D.new()
-		audio.stream = preload("res://art/sound/attack_impact.mp3")
-		audio.global_position = global_position
+		var audio = AudioStreamPlayer.new()
+		audio.stream = preload("res://art/sound/attack_impact.wav")
 		
 		get_tree().current_scene.add_child(audio)
 		audio.play()

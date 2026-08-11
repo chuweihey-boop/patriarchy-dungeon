@@ -10,8 +10,8 @@ func _ready() -> void:
 	get_tree().paused = true
 	
 	for btn in [eggbusket_button, negi_button, fishknife_button, woodensword_button]:
-		btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.mp3"))
-		btn.pressed.connect(func(): _play_ui_sound("UI_click.mp3"))
+		btn.mouse_entered.connect(func(): _play_ui_sound("UI_hover.wav"))
+		btn.pressed.connect(func(): _play_ui_sound("UI_click.wav"))
 		
 	# Connect buttons
 	eggbusket_button.pressed.connect(func(): _select_weapon(0))

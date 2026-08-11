@@ -32,13 +32,13 @@ func _ready() -> void:
 		
 	# Play BGM and Game Start sounds
 	var bgm = AudioStreamPlayer.new()
-	bgm.stream = preload("res://art/sound/background.mp3")
+	bgm.stream = preload("res://art/sound/background.wav")
 	bgm.process_mode = PROCESS_MODE_ALWAYS
 	add_child(bgm)
 	bgm.play()
 	
 	var start_sfx = AudioStreamPlayer.new()
-	start_sfx.stream = preload("res://art/sound/game_start.mp3")
+	start_sfx.stream = preload("res://art/sound/game_start.wav")
 	start_sfx.process_mode = PROCESS_MODE_ALWAYS
 	add_child(start_sfx)
 	start_sfx.play()
