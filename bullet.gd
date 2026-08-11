@@ -57,7 +57,7 @@ func _play_impact_sound_if_needed() -> void:
 		audio.global_position = global_position
 		
 		get_tree().current_scene.add_child(audio)
-	audio.play()
+		audio.play()
 		# Ensure the audio node is cleaned up after playing
 		audio.finished.connect(audio.queue_free)
 

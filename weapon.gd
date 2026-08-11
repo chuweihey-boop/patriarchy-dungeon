@@ -164,7 +164,7 @@ func _shoot(target: CharacterBody2D) -> void:
 		audio.global_position = global_position
 		
 		get_tree().current_scene.add_child(audio)
-	audio.play()
+		audio.play()
 		audio.finished.connect(audio.queue_free)
 
 func _spawn_directional_impact(pos: Vector2, dir: Vector2) -> void:
