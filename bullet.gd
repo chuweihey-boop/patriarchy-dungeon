@@ -56,6 +56,7 @@ func _play_impact_sound_if_needed() -> void:
 		audio.stream = preload("res://art/sound/attack_impact.wav")
 		
 		get_tree().current_scene.add_child(audio)
+		audio.volume_db = 6.0
 		audio.play()
 		# Ensure the audio node is cleaned up after playing
 		audio.finished.connect(audio.queue_free)

@@ -113,8 +113,9 @@ func _die() -> void:
 func _play_death_sound() -> void:
 	var audio = AudioStreamPlayer.new()
 	audio.stream = preload("res://art/sound/enemy_die.wav")
-	
+	audio.volume_db = 2.0
 	get_tree().current_scene.call_deferred("add_child", audio)
+	audio.call_deferred("play")
 	audio.finished.connect(audio.queue_free)
 
 func _spawn_yellow_circle() -> void:

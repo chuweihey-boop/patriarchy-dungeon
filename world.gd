@@ -34,6 +34,7 @@ func _ready() -> void:
 	var bgm = AudioStreamPlayer.new()
 	bgm.stream = preload("res://art/sound/background.wav")
 	bgm.process_mode = PROCESS_MODE_ALWAYS
+	bgm.volume_db = -8.0
 	add_child(bgm)
 	bgm.play()
 	

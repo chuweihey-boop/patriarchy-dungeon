@@ -163,6 +163,7 @@ func _shoot(target: CharacterBody2D) -> void:
 			audio.stream = preload("res://art/sound/sword_woosh2.wav")
 		
 		get_tree().current_scene.add_child(audio)
+		audio.volume_db = 6.0
 		audio.play()
 		audio.finished.connect(audio.queue_free)
 
